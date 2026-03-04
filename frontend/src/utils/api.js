@@ -1,0 +1,21 @@
+import axios from 'axios';
+
+const API_BASE_URL = 'http://localhost:5005/api';
+
+const api = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+// Sync with localStorage
+api.interceptors.request.use((config) => {
+    const contactId = localStorage.getItem('sfContactId');
+    if (contactId) {
+        config.headers['X-Salesforce-Id'] = contactId;
+    }
+    return config;
+});
+
+export default api;
