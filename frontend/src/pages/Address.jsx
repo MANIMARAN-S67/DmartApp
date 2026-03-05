@@ -8,6 +8,7 @@ const Address = () => {
         { id: 1, type: 'home', name: 'Sachin Kumar', flat: '12, Green Park Colony', street: 'MG Road, Andheri West', city: 'Mumbai', pin: '400053', phone: '+91 98765 43210', default: true },
         { id: 2, type: 'work', name: 'DMart Corp Office', flat: 'Level 5, Trade Tower', street: 'BKC, Bandra East', city: 'Mumbai', pin: '400051', phone: '+91 98765 00000', default: false },
     ]);
+    const [selectedId, setSelectedId] = useState(addresses.find(a => a.default)?.id || (addresses.length > 0 ? addresses[0].id : null));
     const [showForm, setShowForm] = useState(false);
     const [selType, setSelType] = useState('home');
     const [formData, setFormData] = useState({ fn: '', ln: '', mob: '', flat: '', street: '', city: '', pin: '', isDefault: false });
@@ -24,12 +25,17 @@ const Address = () => {
 
     const setDefault = (id) => {
         setAddresses(addresses.map(a => ({ ...a, default: a.id === id })));
+        setSelectedId(id);
         showToast('✅ Default address updated!');
     };
 
     const deleteAddr = (id) => {
         if (window.confirm('Delete this address?')) {
-            setAddresses(addresses.filter(a => a.id !== id));
+            const newAddrs = addresses.filter(a => a.id !== id);
+            setAddresses(newAddrs);
+            if (selectedId === id) {
+                setSelectedId(newAddrs.length > 0 ? newAddrs[0].id : null);
+            }
             showToast('🗑️ Address deleted');
         }
     };
@@ -45,8 +51,9 @@ const Address = () => {
             newAddresses = newAddresses.map(a => ({ ...a, default: false }));
         }
 
+        const newId = Date.now();
         const newAddress = {
-            id: Date.now(),
+            id: newId,
             type: selType,
             name: `${formData.fn} ${formData.ln}`.trim(),
             flat: formData.flat,
@@ -57,7 +64,9 @@ const Address = () => {
             default: formData.isDefault || newAddresses.length === 0
         };
 
-        setAddresses([...newAddresses, newAddress]);
+        const updated = [...newAddresses, newAddress];
+        setAddresses(updated);
+        if (newAddress.default) setSelectedId(newId);
         setShowForm(false);
         setFormData({ fn: '', ln: '', mob: '', flat: '', street: '', city: '', pin: '', isDefault: false });
         showToast('✅ Address saved successfully!');
@@ -77,13 +86,20 @@ const Address = () => {
 
             <div className="p-5 space-y-4">
                 {addresses.map(a => (
-                    <div key={a.id} className={`bg-white rounded-3xl p-5 border-2 transition-all shadow-sm ${a.default ? 'border-green-500 shadow-green-100' : 'border-transparent'}`}>
+                    <div
+                        key={a.id}
+                        onClick={() => setSelectedId(a.id)}
+                        className={`bg-white rounded-3xl p-5 border-2 cursor-pointer transition-all shadow-sm ${selectedId === a.id ? 'border-green-500 ring-4 ring-green-500/10' : 'border-slate-100'}`}
+                    >
                         <div className="flex items-center justify-between mb-3">
                             <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${a.type === 'home' ? 'bg-green-100 text-green-700' : a.type === 'work' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}`}>
                                 {a.type === 'home' ? <HomeIcon className="w-3 h-3" /> : a.type === 'work' ? <Briefcase className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
                                 {a.type}
                             </div>
-                            {a.default && <span className="bg-slate-900 text-white px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider">Default</span>}
+                            <div className="flex gap-2">
+                                {a.default && <span className="bg-slate-900 text-white px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider">Default</span>}
+                                {selectedId === a.id && <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white"><Check className="w-3 h-3" /></div>}
+                            </div>
                         </div>
                         <h4 className="font-extrabold text-slate-900 text-sm mb-1">{a.name}</h4>
                         <p className="text-xs font-medium text-slate-500 leading-relaxed mb-3">{a.flat}, {a.street}, {a.city} – {a.pin}</p>
@@ -91,10 +107,15 @@ const Address = () => {
                             <Phone className="w-3.5 h-3.5 text-green-600" /> {a.phone}
                         </div>
 
-                        <div className="flex gap-2 pt-4 border-t border-slate-100">
+                        <div className="flex gap-2 pt-4 border-t border-slate-100" onClick={e => e.stopPropagation()}>
+                            {selectedId !== a.id && (
+                                <button onClick={() => setSelectedId(a.id)} className="flex-1 bg-green-50 text-green-700 border border-green-200 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                    <Check className="w-3.5 h-3.5" /> Select Address
+                                </button>
+                            )}
                             {!a.default && (
-                                <button onClick={() => setDefault(a.id)} className="flex-1 bg-green-50 text-green-700 border border-green-200 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
-                                    <Check className="w-3.5 h-3.5" /> Set Default
+                                <button onClick={() => setDefault(a.id)} className="flex-1 bg-slate-50 text-slate-600 border border-slate-200 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all hover:bg-slate-100">
+                                    Set Default
                                 </button>
                             )}
                             <button onClick={() => showToast('✏️ Edit mode')} className="flex-1 bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all">
@@ -112,7 +133,16 @@ const Address = () => {
                 <button onClick={() => setShowForm(true)} className="w-full bg-slate-900 text-white font-black text-[13px] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-slate-200 active:scale-95 transition-all mb-3">
                     <Plus className="w-4 h-4" /> Add New Address
                 </button>
-                <button onClick={() => navigate('/order-success')} className="w-full bg-green-600 text-white font-black text-[13px] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-green-200 active:scale-95 transition-all">
+                <button
+                    onClick={() => {
+                        if (!selectedId) {
+                            showToast('⚠️ Please select an address first');
+                        } else {
+                            navigate('/order-success');
+                        }
+                    }}
+                    className="w-full bg-green-600 text-white font-black text-[13px] py-4 rounded-2xl flex items-center justify-center gap-2 shadow-xl shadow-green-200 active:scale-95 transition-all shadow-green-900/20"
+                >
                     ✅ Proceed to Order Summary →
                 </button>
             </div>
