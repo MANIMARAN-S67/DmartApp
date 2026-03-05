@@ -16,8 +16,18 @@ const Welcome = () => {
             {/* Slide 1 */}
             <div className={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-between p-8 ${slide === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#0a5c2e 0%,#1a8a42 60%,#27ae60 100%)' }}>
                 <div className="flex-1 flex flex-col justify-center items-center text-center mt-12 animate-slideUp">
-                    <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl mb-8 border-4 border-green-300/30">
-                        <span className="text-5xl font-black text-[#1a8a42]">D</span>
+                    {/* NEW LOGO SVG */}
+                    <div className="w-28 h-28 bg-[#f59e0b] rounded-3xl flex items-center justify-center shadow-2xl mb-8 border-[3px] border-white/40 overflow-hidden shadow-orange-900/20">
+                        <svg viewBox="0 0 100 100" className="w-[4.5rem] h-[4.5rem] text-[#0d285a] translate-x-1" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+                            {/* Outer Cart Lines */}
+                            <path d="M10,25 L25,25 L35,65 L75,65 L85,35 L30,35" />
+                            {/* Wheels */}
+                            <circle cx="40" cy="80" r="5" fill="currentColor" stroke="none" />
+                            <circle cx="70" cy="80" r="5" fill="currentColor" stroke="none" />
+                            {/* Inner D Shape cutout */}
+                            <path d="M48,42 L55,42 C61,42 63,46 63,49 C63,52 61,56 55,56 L48,56 Z" fill="currentColor" stroke="none" />
+                            <path d="M51,45 L54,45 C57,45 58,47 58,49 C58,51 57,53 54,53 L51,53 Z" fill="#f59e0b" stroke="none" />
+                        </svg>
                     </div>
 
                     <h1 className="text-4xl font-extrabold mb-4 leading-tight text-white drop-shadow-sm">Welcome to <span className="text-green-200">DMart Online</span></h1>
