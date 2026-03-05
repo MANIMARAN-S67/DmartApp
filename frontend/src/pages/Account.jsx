@@ -47,7 +47,10 @@ const Account = () => {
                     </button>
                     <h1 className="text-xl font-black text-slate-900 tracking-tight">Profile <span className="text-green-600">Sync</span></h1>
                 </div>
-                <button className="w-10 h-10 bg-slate-50 border border-slate-100 flex items-center justify-center rounded-xl text-slate-500">
+                <button
+                    onClick={() => navigate('/settings')}
+                    className="w-10 h-10 bg-slate-50 border border-slate-100 flex items-center justify-center rounded-xl text-slate-500 active:scale-90 transition-all"
+                >
                     <Settings className="w-5 h-5" />
                 </button>
             </header>

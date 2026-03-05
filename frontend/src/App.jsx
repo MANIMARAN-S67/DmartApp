@@ -9,6 +9,7 @@ import ProductDetails from './pages/ProductDetails';
 import Cart from './pages/Cart';
 import Payment from './pages/Payment';
 import Account from './pages/Account';
+import Settings from './pages/Settings';
 import Offers from './pages/Offers';
 import Orders from './pages/Orders';
 import Address from './pages/Address';
@@ -33,6 +34,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/offers" element={<Offers />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/address" element={<Address />} />
