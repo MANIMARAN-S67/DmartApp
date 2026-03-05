@@ -4,11 +4,14 @@ import { User, LogOut, Package, Wallet, Star, ArrowLeft, ChevronRight, Settings,
 import api from '../utils/api';
 
 const Account = () => {
-    const [user] = useState({
+    const [user, setUser] = useState({
         name: localStorage.getItem('userName') || 'Guest User',
         email: localStorage.getItem('userEmail') || 'guest@dmart.in',
-        phone: '+91 98765 43210'
+        phone: localStorage.getItem('userPhone') || '+91 98765 43210',
+        emoji: localStorage.getItem('userEmoji') || '🧑‍💻'
     });
+    const [isOnline, setIsOnline] = useState(true);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
@@ -29,7 +32,17 @@ const Account = () => {
     const logout = () => {
         localStorage.removeItem('sfContactId');
         localStorage.removeItem('userName');
+        localStorage.removeItem('userPhone');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userEmoji');
         navigate('/login');
+    };
+
+    const updateEmoji = (newEmoji) => {
+        const updated = { ...user, emoji: newEmoji };
+        setUser(updated);
+        localStorage.setItem('userEmoji', newEmoji);
+        setShowEmojiPicker(false);
     };
 
     const highlights = [
@@ -57,15 +70,29 @@ const Account = () => {
 
             <div className="px-5 pt-24 animate-slideUp">
                 <div className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm mb-6 flex flex-col items-center text-center">
-                    <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-green-600 to-green-400 p-1 mb-4 shadow-xl">
-                        <div className="w-full h-full bg-white rounded-2xl flex items-center justify-center overflow-hidden">
-                            <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} alt="Avatar" className="w-full h-full object-cover" />
+                    <div className="relative">
+                        <div
+                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                            className="w-24 h-24 rounded-[32px] bg-gradient-to-br from-green-500 to-emerald-400 p-1 mb-4 shadow-xl cursor-pointer active:scale-90 transition-all group"
+                        >
+                            <div className="w-full h-full bg-white rounded-[28px] flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
+                                {user.emoji}
+                            </div>
                         </div>
+                        {showEmojiPicker && (
+                            <div className="absolute top-28 left-1/2 -translate-x-1/2 bg-white rounded-3xl shadow-2xl border border-slate-100 p-4 grid grid-cols-4 gap-2 z-[100] w-[200px] animate-slideUp">
+                                {['🧑‍💻', '🛒', '📦', '🍏', '🥑', '🍔', '🍕', '🚀', '🎁', '😎', '⚡', '🔥'].map(e => (
+                                    <button key={e} onClick={() => updateEmoji(e)} className="text-2xl hover:bg-slate-50 p-2 rounded-xl active:scale-90 transition-all">{e}</button>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-1">{user.name}</h2>
-                    <div className="flex items-center gap-2 mb-6">
-                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">Active Salesforce Profile</p>
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-2">{user.name}</h2>
+                    <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => setIsOnline(!isOnline)}>
+                        <div className={`w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-green-500 animate-pulse shadow-green-200 shadow-lg' : 'bg-slate-300'}`}></div>
+                        <p className={`text-[10px] font-black uppercase tracking-widest ${isOnline ? 'text-green-600' : 'text-slate-400'}`}>
+                            {isOnline ? 'Connected • ONLINE' : 'DISCONNECTED • OFFLINE'}
+                        </p>
                     </div>
 
                     <div className="grid grid-cols-3 gap-3 w-full">
@@ -111,20 +138,6 @@ const Account = () => {
                             </div>
                             <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-purple-500 transition-colors" />
                         </div>
-                        {/* Orders preview */}
-                        {orders.length > 0 && (
-                            <div className="mt-2 space-y-2">
-                                {orders.slice(0, 3).map(o => (
-                                    <div key={o.Id} className="flex justify-between items-center px-4 py-3 bg-white border border-slate-100 rounded-xl">
-                                        <div>
-                                            <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Order #{o.Id.slice(-6)}</p>
-                                            <p className="text-xs font-bold text-slate-800">{new Date(o.CreatedDate).toLocaleDateString()}</p>
-                                        </div>
-                                        <span className="px-3 py-1 bg-green-50 text-green-700 text-[10px] font-black rounded-lg border border-green-100">{o.Status__c || o.Status || 'Active'}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -150,7 +163,6 @@ const Account = () => {
                 </button>
             </div>
 
-            {/* Decorative */}
             <div className="fixed -bottom-12 -right-12 w-64 h-64 bg-green-50 rounded-full blur-3xl opacity-40 -z-10"></div>
         </div>
     );
