@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, LogOut, Package, Wallet, Star, ArrowLeft, ChevronRight, Settings, Phone, Mail } from 'lucide-react';
+import { User, LogOut, Package, Wallet, Star, ArrowLeft, ChevronRight, Settings, Phone, Mail, Camera, Image as ImageIcon } from 'lucide-react';
 import api from '../utils/api';
 
 const Account = () => {
@@ -8,10 +8,9 @@ const Account = () => {
         name: localStorage.getItem('userName') || 'Guest User',
         email: localStorage.getItem('userEmail') || 'guest@dmart.in',
         phone: localStorage.getItem('userPhone') || '+91 98765 43210',
-        emoji: localStorage.getItem('userEmoji') || '🧑‍💻'
+        photo: localStorage.getItem('userPhoto') || null
     });
     const [isOnline, setIsOnline] = useState(true);
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
 
@@ -34,15 +33,22 @@ const Account = () => {
         localStorage.removeItem('userName');
         localStorage.removeItem('userPhone');
         localStorage.removeItem('userEmail');
-        localStorage.removeItem('userEmoji');
+        localStorage.removeItem('userPhoto');
         navigate('/login');
     };
 
-    const updateEmoji = (newEmoji) => {
-        const updated = { ...user, emoji: newEmoji };
-        setUser(updated);
-        localStorage.setItem('userEmoji', newEmoji);
-        setShowEmojiPicker(false);
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result;
+                const updated = { ...user, photo: base64String };
+                setUser(updated);
+                localStorage.setItem('userPhoto', base64String);
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     const highlights = [
@@ -70,22 +76,38 @@ const Account = () => {
 
             <div className="px-5 pt-24 animate-slideUp">
                 <div className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm mb-6 flex flex-col items-center text-center">
-                    <div className="relative">
+                    <div className="relative group">
                         <div
-                            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                            className="w-24 h-24 rounded-[32px] bg-gradient-to-br from-green-500 to-emerald-400 p-1 mb-4 shadow-xl cursor-pointer active:scale-90 transition-all group"
+                            className="w-28 h-28 rounded-[38px] bg-gradient-to-br from-green-500 to-emerald-400 p-1 mb-4 shadow-2xl relative transition-all"
                         >
-                            <div className="w-full h-full bg-white rounded-[28px] flex items-center justify-center text-4xl group-hover:scale-110 transition-transform">
-                                {user.emoji}
+                            <div className="w-full h-full bg-white rounded-[34px] flex items-center justify-center overflow-hidden">
+                                {user.photo ? (
+                                    <img src={user.photo} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="flex flex-col items-center text-slate-300">
+                                        <User className="w-10 h-10" />
+                                        <span className="text-[8px] font-black uppercase tracking-tighter mt-1">No Photo</span>
+                                    </div>
+                                )}
                             </div>
+
+                            {/* Hidden File Input */}
+                            <input
+                                type="file"
+                                id="photo-upload"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handlePhotoChange}
+                            />
+
+                            {/* Edit Icon Button */}
+                            <label
+                                htmlFor="photo-upload"
+                                className="absolute -right-2 -bottom-2 w-10 h-10 bg-slate-900 border-4 border-white rounded-2xl flex items-center justify-center text-white cursor-pointer active:scale-90 transition-all shadow-lg hover:bg-green-600"
+                            >
+                                <Camera className="w-5 h-5" />
+                            </label>
                         </div>
-                        {showEmojiPicker && (
-                            <div className="absolute top-28 left-1/2 -translate-x-1/2 bg-white rounded-3xl shadow-2xl border border-slate-100 p-4 grid grid-cols-4 gap-2 z-[100] w-[200px] animate-slideUp">
-                                {['🧑‍💻', '🛒', '📦', '🍏', '🥑', '🍔', '🍕', '🚀', '🎁', '😎', '⚡', '🔥'].map(e => (
-                                    <button key={e} onClick={() => updateEmoji(e)} className="text-2xl hover:bg-slate-50 p-2 rounded-xl active:scale-90 transition-all">{e}</button>
-                                ))}
-                            </div>
-                        )}
                     </div>
                     <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none mb-2">{user.name}</h2>
                     <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => setIsOnline(!isOnline)}>
