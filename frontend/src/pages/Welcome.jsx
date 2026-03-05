@@ -17,16 +17,15 @@ const Welcome = () => {
             <div className={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-between p-8 ${slide === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#0a5c2e 0%,#1a8a42 60%,#27ae60 100%)' }}>
                 <div className="flex-1 flex flex-col justify-center items-center text-center mt-12 animate-slideUp">
                     {/* NEW LOGO SVG */}
-                    <div className="w-28 h-28 bg-[#f59e0b] rounded-3xl flex items-center justify-center shadow-2xl mb-8 border-[3px] border-white/40 overflow-hidden shadow-orange-900/20">
+                    <div className="w-28 h-28 bg-[#f59e0b] rounded-[2rem] flex items-center justify-center shadow-2xl mb-8 border-[4px] border-[#fcd34d] shadow-green-900/40">
                         <svg viewBox="0 0 100 100" className="w-[4.5rem] h-[4.5rem] text-[#0d285a] translate-x-1" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
-                            {/* Outer Cart Lines */}
-                            <path d="M10,25 L25,25 L35,65 L75,65 L85,35 L30,35" />
+                            {/* Shopping Cart Outline */}
+                            <path d="M15,25 L28,25 L35,62 L75,62 L82,32 L30,32" />
                             {/* Wheels */}
-                            <circle cx="40" cy="80" r="5" fill="currentColor" stroke="none" />
-                            <circle cx="70" cy="80" r="5" fill="currentColor" stroke="none" />
-                            {/* Inner D Shape cutout */}
-                            <path d="M48,42 L55,42 C61,42 63,46 63,49 C63,52 61,56 55,56 L48,56 Z" fill="currentColor" stroke="none" />
-                            <path d="M51,45 L54,45 C57,45 58,47 58,49 C58,51 57,53 54,53 L51,53 Z" fill="#f59e0b" stroke="none" />
+                            <circle cx="42" cy="78" r="4.5" fill="currentColor" stroke="none" />
+                            <circle cx="68" cy="78" r="4.5" fill="currentColor" stroke="none" />
+                            {/* Inner D Shape - Simplified and clean */}
+                            <path d="M50,42 L56,42 C61,42 64,45 64,48.5 C64,52 61,55 56,55 L50,55 Z" strokeWidth="5" />
                         </svg>
                     </div>
 
