@@ -16,16 +16,32 @@ const Welcome = () => {
             {/* Slide 1 */}
             <div className={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-between p-8 ${slide === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#0a5c2e 0%,#1a8a42 60%,#27ae60 100%)' }}>
                 <div className="flex-1 flex flex-col justify-center items-center text-center mt-12 animate-slideUp">
-                    {/* NEW LOGO SVG */}
-                    <div className="w-28 h-28 bg-[#f59e0b] rounded-[2rem] flex items-center justify-center shadow-2xl mb-8 border-[4px] border-[#fcd34d] shadow-green-900/40">
-                        <svg viewBox="0 0 100 100" className="w-[4.5rem] h-[4.5rem] text-[#0d285a] translate-x-1" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
-                            {/* Shopping Cart Outline */}
-                            <path d="M15,25 L28,25 L35,62 L75,62 L82,32 L30,32" />
-                            {/* Wheels */}
-                            <circle cx="42" cy="78" r="4.5" fill="currentColor" stroke="none" />
-                            <circle cx="68" cy="78" r="4.5" fill="currentColor" stroke="none" />
-                            {/* Inner D Shape - Simplified and clean */}
-                            <path d="M50,42 L56,42 C61,42 64,45 64,48.5 C64,52 61,55 56,55 L50,55 Z" strokeWidth="5" />
+                    {/* NEW DMART LOGO SVG */}
+                    <div className="w-32 h-32 rounded-[2rem] flex items-center justify-center shadow-2xl mb-8 border border-white/30 overflow-hidden relative z-10" style={{ background: 'repeating-conic-gradient(from -90deg at 50% 100%, #b8d4c7 0 10deg, #9bbfae 10deg 20deg)' }}>
+                        <svg viewBox="0 0 100 100" className="w-[6.5rem] h-[6.5rem] text-[#196b3a] relative z-10 translate-x-1 translate-y-1" fill="currentColor">
+                            <path d="M 4 12 h 12 l 10 18 h -12 z" />
+                            <path d="M 20 30 h 78 l -16 35 h -50 z" />
+                            <path d="M 16 42 h 6 l 12 26 h 44 v 7 h -52 z" />
+
+                            <circle cx="36" cy="85" r="9.5" />
+                            <circle cx="36" cy="85" r="3.5" fill="#a4c4b6" />
+                            <circle cx="68" cy="85" r="9.5" />
+                            <circle cx="68" cy="85" r="3.5" fill="#a4c4b6" />
+
+                            <text x="29" y="55" fill="white" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="23" letterSpacing="0">D</text>
+
+                            <g transform="translate(48, 36)">
+                                <polygon points="4,0 5.2,1.8 7.5,2 6,3.6 6.5,5.5 4,4.5 1.5,5.5 2,3.6 0.5,2 2.8,1.8" fill="white" transform="scale(0.55) translate(3.3, 0)" />
+                                <line x1="3" y1="5.5" x2="5" y2="5.5" stroke="white" strokeWidth="1.2" />
+                                <line x1="2" y1="7.5" x2="6" y2="7.5" stroke="white" strokeWidth="1.2" />
+                                <line x1="1" y1="9.5" x2="7" y2="9.5" stroke="white" strokeWidth="1.2" />
+                                <line x1="0" y1="11.5" x2="8" y2="11.5" stroke="white" strokeWidth="1.2" />
+                                <line x1="-1" y1="13.5" x2="9" y2="13.5" stroke="white" strokeWidth="1.2" />
+                                <line x1="-2" y1="15.5" x2="10" y2="15.5" stroke="white" strokeWidth="1.2" />
+                                <line x1="-3" y1="17.5" x2="11" y2="17.5" stroke="white" strokeWidth="1.2" />
+                            </g>
+
+                            <text x="63" y="55" fill="white" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="19" letterSpacing="-0.5">Mart</text>
                         </svg>
                     </div>
 
