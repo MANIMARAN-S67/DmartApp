@@ -56,6 +56,13 @@ const Landing = () => {
     const [toast, setToast] = useState('');
     const timerRef = useRef(null);
     const navigate = useNavigate();
+    const [userPhoto, setUserPhoto] = useState(localStorage.getItem('userPhoto') || null);
+
+    useEffect(() => {
+        const syncPhoto = () => setUserPhoto(localStorage.getItem('userPhoto'));
+        window.addEventListener('storage', syncPhoto);
+        return () => window.removeEventListener('storage', syncPhoto);
+    }, []);
 
     useEffect(() => {
         const c = JSON.parse(localStorage.getItem('dmartCart') || '[]');
@@ -341,7 +348,13 @@ const Landing = () => {
                     <span className="text-[9px] font-black">Cart</span>
                 </NavLink>
                 <NavLink to="/account" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-orange-500' : 'text-slate-400'}`}>
-                    <User className="w-5 h-5" />
+                    <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center">
+                        {userPhoto ? (
+                            <img src={userPhoto} alt="Me" className="w-full h-full object-cover" />
+                        ) : (
+                            <User className="w-4 h-4" />
+                        )}
+                    </div>
                     <span className="text-[9px] font-black">Account</span>
                 </NavLink>
             </nav>

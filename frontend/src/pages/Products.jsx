@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import {
-  ArrowLeft,
-  Search,
-  SlidersHorizontal,
-  Star,
-  Heart,
-  ShoppingCart,
-  Home,
-  Package,
-  Tag,
-  User,
-  CheckCircle,
-  Plus,
-  Minus,
+    ArrowLeft,
+    Search,
+    SlidersHorizontal,
+    Star,
+    Heart,
+    ShoppingCart,
+    Home,
+    Package,
+    Tag,
+    User,
+    CheckCircle,
+    Plus,
+    Minus,
 } from 'lucide-react';
 import { ALL_PRODUCTS } from '../data/products';
 
 const CATS = [
-  'All',
-  'Fruits',
-  'Vegetables',
-  'Dairy',
-  'Grains',
-  'Snacks',
-  'Beverages',
-  'Bakery',
-  'Personal Care',
-  'Cleaning',
-  'Frozen',
-  'Men',
-  'Women',
-  'Children',
+    'All',
+    'Fruits',
+    'Vegetables',
+    'Dairy',
+    'Grains',
+    'Snacks',
+    'Beverages',
+    'Bakery',
+    'Personal Care',
+    'Cleaning',
+    'Frozen',
+    'Men',
+    'Women',
+    'Children',
 ];
 
 const CAT_COLORS = {
@@ -65,76 +65,84 @@ const CAT_EMOJIS = {
 };
 
 export default function Products() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeCat, setActiveCat] = useState('All');
-  const [search, setSearch] = useState('');
-  const [cart, setCart] = useState(() =>
-    JSON.parse(localStorage.getItem('dmartCart') || '[]'),
-  );
-  const [toast, setToast] = useState('');
-  const [wishlist, setWishlist] = useState([]);
-
-  useEffect(() => {
-    if (location.state?.cat) {
-      setActiveCat(location.state.cat);
-    }
-  }, [location.state?.cat]);
-
-  useEffect(() => {
-    localStorage.setItem('dmartCart', JSON.stringify(cart));
-  }, [cart]);
-
-  const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(''), 1800);
-  };
-
-  const getQty = (id) => cart.find((i) => i.id === id)?.qty || 0;
-
-  const addToCart = (product) => {
-    setCart((prev) => {
-      const idx = prev.findIndex((i) => i.id === product.id);
-      if (idx >= 0)
-        return prev.map((i, j) =>
-          j === idx ? { ...i, qty: i.qty + 1 } : i,
-        );
-      return [...prev, { ...product, qty: 1 }];
-    });
-    showToast(`✅ Added to cart!`);
-  };
-
-  const removeFromCart = (product) => {
-    setCart((prev) => {
-      const idx = prev.findIndex((i) => i.id === product.id);
-      if (idx < 0) return prev;
-      if (prev[idx].qty <= 1) return prev.filter((i) => i.id !== product.id);
-      return prev.map((i, j) =>
-        j === idx ? { ...i, qty: i.qty - 1 } : i,
-      );
-    });
-  };
-
-  const toggleWish = (id) =>
-    setWishlist((w) =>
-      w.includes(id) ? w.filter((x) => x !== id) : [...w, id],
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [activeCat, setActiveCat] = useState('All');
+    const [search, setSearch] = useState('');
+    const [cart, setCart] = useState(() =>
+        JSON.parse(localStorage.getItem('dmartCart') || '[]'),
     );
+    const [toast, setToast] = useState('');
+    const [wishlist, setWishlist] = useState([]);
+    const [userPhoto, setUserPhoto] = useState(localStorage.getItem('userPhoto') || null);
 
-  const openDetails = (product) => {
-    navigate(`/product/${product.id}`, { state: { product } });
-  };
+    useEffect(() => {
+        // Sync photo if it changes in local storage
+        const syncPhoto = () => setUserPhoto(localStorage.getItem('userPhoto'));
+        window.addEventListener('storage', syncPhoto);
+        return () => window.removeEventListener('storage', syncPhoto);
+    }, []);
 
-  const filtered = ALL_PRODUCTS.filter((p) => {
-    const catMatch = activeCat === 'All' || p.cat === activeCat;
-    const searchMatch =
-      !search || p.name.toLowerCase().includes(search.toLowerCase());
-    return catMatch && searchMatch;
-  });
+    useEffect(() => {
+        if (location.state?.cat) {
+            setActiveCat(location.state.cat);
+        }
+    }, [location.state?.cat]);
 
-  const cartTotal = cart.reduce((a, i) => a + i.price * i.qty, 0);
-  const cartCount = cart.reduce((a, i) => a + i.qty, 0);
+    useEffect(() => {
+        localStorage.setItem('dmartCart', JSON.stringify(cart));
+    }, [cart]);
 
-  return (
+    const showToast = (msg) => {
+        setToast(msg);
+        setTimeout(() => setToast(''), 1800);
+    };
+
+    const getQty = (id) => cart.find((i) => i.id === id)?.qty || 0;
+
+    const addToCart = (product) => {
+        setCart((prev) => {
+            const idx = prev.findIndex((i) => i.id === product.id);
+            if (idx >= 0)
+                return prev.map((i, j) =>
+                    j === idx ? { ...i, qty: i.qty + 1 } : i,
+                );
+            return [...prev, { ...product, qty: 1 }];
+        });
+        showToast(`✅ Added to cart!`);
+    };
+
+    const removeFromCart = (product) => {
+        setCart((prev) => {
+            const idx = prev.findIndex((i) => i.id === product.id);
+            if (idx < 0) return prev;
+            if (prev[idx].qty <= 1) return prev.filter((i) => i.id !== product.id);
+            return prev.map((i, j) =>
+                j === idx ? { ...i, qty: i.qty - 1 } : i,
+            );
+        });
+    };
+
+    const toggleWish = (id) =>
+        setWishlist((w) =>
+            w.includes(id) ? w.filter((x) => x !== id) : [...w, id],
+        );
+
+    const openDetails = (product) => {
+        navigate(`/product/${product.id}`, { state: { product } });
+    };
+
+    const filtered = ALL_PRODUCTS.filter((p) => {
+        const catMatch = activeCat === 'All' || p.cat === activeCat;
+        const searchMatch =
+            !search || p.name.toLowerCase().includes(search.toLowerCase());
+        return catMatch && searchMatch;
+    });
+
+    const cartTotal = cart.reduce((a, i) => a + i.price * i.qty, 0);
+    const cartCount = cart.reduce((a, i) => a + i.qty, 0);
+
+    return (
         <div className="min-h-screen pb-36" style={{ background: '#f0f4ff' }}>
 
             {/* ── HEADER ── */}
@@ -326,7 +334,13 @@ export default function Products() {
                     <span className="text-[9px] font-black">Cart</span>
                 </NavLink>
                 <NavLink to="/account" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-blue-600' : 'text-slate-400'}`}>
-                    <User className="w-5 h-5" />
+                    <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center">
+                        {userPhoto ? (
+                            <img src={userPhoto} alt="Me" className="w-full h-full object-cover" />
+                        ) : (
+                            <User className="w-4 h-4" />
+                        )}
+                    </div>
                     <span className="text-[9px] font-black">Account</span>
                 </NavLink>
             </nav>
