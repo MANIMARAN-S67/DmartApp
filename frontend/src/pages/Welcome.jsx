@@ -28,8 +28,6 @@ const Welcome = () => {
                             <circle cx="68" cy="85" r="9.5" />
                             <circle cx="68" cy="85" r="3.5" fill="#a4c4b6" />
 
-                            <text x="29" y="55" fill="white" fontFamily="Arial, Helvetica, sans-serif" fontWeight="900" fontSize="23" letterSpacing="0">D</text>
-
                             <g transform="translate(48, 36)">
                                 <polygon points="4,0 5.2,1.8 7.5,2 6,3.6 6.5,5.5 4,4.5 1.5,5.5 2,3.6 0.5,2 2.8,1.8" fill="white" transform="scale(0.55) translate(3.3, 0)" />
                                 <line x1="3" y1="5.5" x2="5" y2="5.5" stroke="white" strokeWidth="1.2" />
@@ -40,8 +38,6 @@ const Welcome = () => {
                                 <line x1="-2" y1="15.5" x2="10" y2="15.5" stroke="white" strokeWidth="1.2" />
                                 <line x1="-3" y1="17.5" x2="11" y2="17.5" stroke="white" strokeWidth="1.2" />
                             </g>
-
-                            <text x="63" y="55" fill="white" fontFamily="Arial, Helvetica, sans-serif" fontWeight="800" fontSize="19" letterSpacing="-0.5">Mart</text>
                         </svg>
                     </div>
 
