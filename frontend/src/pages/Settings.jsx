@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Mail, Phone, Lock, Bell, Globe, ChevronRight, Shield, Save, Edit3, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, User, Mail, Phone, Lock, ChevronRight, Shield, Save, Edit3, CheckCircle2, X } from 'lucide-react';
 
 const Settings = () => {
     const navigate = useNavigate();
@@ -11,6 +11,15 @@ const Settings = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [saveStatus, setSaveStatus] = useState('');
 
+    // Modal states
+    const [showPrivacy, setShowPrivacy] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+    // Password flow states
+    const [passwordStep, setPasswordStep] = useState('phone'); // 'phone' | 'otp' | 'newPassword'
+    const [otp, setOtp] = useState(['', '', '', '']);
+    const [newPassword, setNewPassword] = useState('');
+
     const handleSave = () => {
         localStorage.setItem('userName', name);
         localStorage.setItem('userEmail', email);
@@ -18,6 +27,18 @@ const Settings = () => {
         setSaveStatus('success');
         setIsEditing(false);
         setTimeout(() => setSaveStatus(''), 2000);
+    };
+
+    const handleOtpChange = (index, value) => {
+        if (isNaN(value)) return;
+        const newOtp = [...otp];
+        newOtp[index] = value.substring(value.length - 1);
+        setOtp(newOtp);
+        // Auto focus next
+        if (value && index < 3) {
+            const nextInput = document.getElementById(`otp-${index + 1}`);
+            if (nextInput) nextInput.focus();
+        }
     };
 
     return (
@@ -108,24 +129,30 @@ const Settings = () => {
                 <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm mb-6">
                     <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Security</h4>
                     <div className="space-y-3">
-                        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer active:scale-95 transition-all">
+                        <div
+                            onClick={() => { setShowPasswordModal(true); setPasswordStep('phone'); }}
+                            className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer active:scale-95 transition-all group hover:border-red-200"
+                        >
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center group-hover:bg-red-100 transition-colors">
                                     <Lock className="w-5 h-5" />
                                 </div>
                                 <span className="text-sm font-black text-slate-800">Change Password</span>
                             </div>
-                            <ChevronRight className="w-5 h-5 text-slate-300" />
+                            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-red-400 transition-colors" />
                         </div>
 
-                        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer active:scale-95 transition-all">
+                        <div
+                            onClick={() => setShowPrivacy(true)}
+                            className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 cursor-pointer active:scale-95 transition-all group hover:border-purple-200"
+                        >
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
                                     <Shield className="w-5 h-5" />
                                 </div>
                                 <span className="text-sm font-black text-slate-800">Privacy & Terms</span>
                             </div>
-                            <ChevronRight className="w-5 h-5 text-slate-300" />
+                            <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-purple-400 transition-colors" />
                         </div>
                     </div>
                 </div>
@@ -141,6 +168,136 @@ const Settings = () => {
                     )}
                 </button>
             </div>
+
+            {/* Privacy & Terms Modal */}
+            {showPrivacy && (
+                <div className="fixed inset-0 z-[100] flex items-end justify-center max-w-[480px] mx-auto overflow-hidden animate-fadeIn">
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowPrivacy(false)}></div>
+                    <div className="relative w-full bg-white rounded-t-[40px] p-8 pb-10 shadow-2xl animate-slideUp border-t border-slate-100 max-h-[85vh] overflow-y-auto">
+                        <div className="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-8"></div>
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-black text-slate-900">Privacy <span className="text-green-600">& Terms</span></h2>
+                            <button onClick={() => setShowPrivacy(false)} className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400"><X /></button>
+                        </div>
+                        <div className="space-y-6 text-slate-600 text-sm font-bold leading-relaxed">
+                            <section>
+                                <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-3">1. Information Collection</h3>
+                                <p>We collect information you provide directly to us when you create an account, make a purchase, or communicate with us in Salesforce.</p>
+                            </section>
+                            <section>
+                                <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-3">2. Data Usage</h3>
+                                <p>Your data is used to process orders, manage deliveries, and provide personalized DMart offers based on your shopping history.</p>
+                            </section>
+                            <section>
+                                <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-3">3. Security</h3>
+                                <p>We implement professional security measures to protect your account details and payment information.</p>
+                            </section>
+                            <section>
+                                <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-3">4. Cookies</h3>
+                                <p>We use local storage and session identifiers to keep you logged in and remember your shopping cart items.</p>
+                            </section>
+                        </div>
+                        <button onClick={() => setShowPrivacy(false)} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black mt-10">I Understand</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Password Change Modal / Flow */}
+            {showPasswordModal && (
+                <div className="fixed inset-0 z-[100] flex items-end justify-center max-w-[480px] mx-auto animate-fadeIn">
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setShowPasswordModal(false)}></div>
+                    <div className="relative w-full bg-white rounded-t-[40px] p-8 pb-10 shadow-2xl animate-slideUp border-t border-slate-100">
+                        <div className="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-8"></div>
+
+                        {passwordStep === 'phone' && (
+                            <div className="animate-slideUp">
+                                <h2 className="text-2xl font-black text-slate-900 mb-2">Verify <span className="text-red-500">Phone</span></h2>
+                                <p className="text-slate-500 text-sm font-bold mb-8">We will send a 4-digit OTP to your registered number.</p>
+                                <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100 mb-8 flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-red-500">
+                                        <Phone />
+                                    </div>
+                                    <span className="text-lg font-black text-slate-800 tracking-tight">{phone}</span>
+                                </div>
+                                <button
+                                    onClick={() => setPasswordStep('otp')}
+                                    className="w-full bg-red-500 text-white py-4.5 rounded-2xl font-black shadow-lg shadow-red-200"
+                                >
+                                    Get OTP via SMS
+                                </button>
+                            </div>
+                        )}
+
+                        {passwordStep === 'otp' && (
+                            <div className="animate-slideUp text-center">
+                                <h2 className="text-2xl font-black text-slate-900 mb-2">Enter <span className="text-orange-500">OTP</span></h2>
+                                <p className="text-slate-500 text-sm font-bold mb-8">Code sent to {phone.slice(-4).padStart(phone.length, '*')}</p>
+
+                                <div className="flex justify-center gap-4 mb-10">
+                                    {otp.map((digit, idx) => (
+                                        <input
+                                            key={idx}
+                                            id={`otp-${idx}`}
+                                            type="number"
+                                            value={digit}
+                                            onChange={(e) => handleOtpChange(idx, e.target.value)}
+                                            className="w-14 h-16 bg-slate-50 border-2 border-slate-100 rounded-2xl text-center font-black text-2xl focus:border-orange-400 outline-none transition-all"
+                                        />
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={() => setPasswordStep('newPassword')}
+                                    disabled={otp.some(d => !d)}
+                                    className="w-full bg-orange-500 text-white py-4.5 rounded-2xl font-black shadow-lg shadow-orange-200 disabled:opacity-50"
+                                >
+                                    Verify Code
+                                </button>
+                                <p className="mt-6 text-xs font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-orange-600">Resend Code in 00:45</p>
+                            </div>
+                        )}
+
+                        {passwordStep === 'newPassword' && (
+                            <div className="animate-slideUp">
+                                <h2 className="text-2xl font-black text-slate-900 mb-2">New <span className="text-green-600">Password</span></h2>
+                                <p className="text-slate-500 text-sm font-bold mb-8">Set a strong secure password for your DMart account.</p>
+
+                                <div className="space-y-4 mb-8">
+                                    <div className="relative">
+                                        <Lock className="absolute left-4 top-4.5 text-slate-400 w-5 h-5" />
+                                        <input
+                                            type="password"
+                                            placeholder="Enter New Password"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                            className="w-full pl-12 pr-4 py-4.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-800 outline-none focus:border-green-400 transition-all"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <Lock className="absolute left-4 top-4.5 text-slate-400 w-5 h-5" />
+                                        <input
+                                            type="password"
+                                            placeholder="Confirm Password"
+                                            className="w-full pl-12 pr-4 py-4.5 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-800 outline-none focus:border-green-400 transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        setSaveStatus('success');
+                                        setShowPasswordModal(false);
+                                        setTimeout(() => setSaveStatus(''), 2000);
+                                    }}
+                                    className="w-full bg-green-600 text-white py-4.5 rounded-2xl font-black shadow-lg shadow-green-200"
+                                >
+                                    Update Password
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

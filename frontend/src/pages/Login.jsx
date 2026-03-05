@@ -147,6 +147,16 @@ const Login = () => {
                         </div>
                     )}
 
+                    <div className="flex justify-end pr-2">
+                        <button
+                            type="button"
+                            onClick={() => navigate('/settings')}
+                            className="text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-500 transition-colors"
+                        >
+                            Forgot Password?
+                        </button>
+                    </div>
+
                     <button
                         type="submit"
                         disabled={loading}
@@ -163,7 +173,7 @@ const Login = () => {
                     </button>
                 </form>
 
-                <div className="mt-8 text-center pb-8">
+                <div className="mt-8 text-center pb-8 transition-all hover:scale-105">
                     <p className="text-slate-400 font-bold text-sm tracking-tight mb-2">New to DMart Online?</p>
                     <Link to="/register" className="text-orange-500 font-black text-base hover:text-orange-600 transition-colors inline-block py-1 border-b-2 border-orange-200 hover:border-orange-500">
                         Create an Account
