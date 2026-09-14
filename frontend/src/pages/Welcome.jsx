@@ -12,13 +12,13 @@ const Welcome = () => {
     };
 
     return (
-        <div className="h-screen relative overflow-hidden text-white font-sans max-w-[480px] mx-auto animate-fadeIn">
+        <div className="w-full h-full relative overflow-hidden text-white font-sans max-w-[480px] mx-auto animate-fadeIn">
             {/* Slide 1 */}
-            <div className={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-between p-8 ${slide === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#0a5c2e 0%,#1a8a42 60%,#27ae60 100%)' }}>
-                <div className="flex-1 flex flex-col justify-center items-center text-center mt-12 animate-slideUp">
+            <div className={`absolute inset-0 h-full w-full transition-opacity duration-500 flex flex-col justify-between p-4 sm:p-6 ${slide === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#0a5c2e 0%,#1a8a42 60%,#27ae60 100%)' }}>
+                <div className="flex-1 flex flex-col justify-center items-center text-center mt-4 sm:mt-6 animate-slideUp overflow-hidden">
                     {/* NEW DMART LOGO SVG */}
-                    <div className="w-32 h-32 rounded-[2rem] flex items-center justify-center shadow-2xl mb-8 border border-white/30 overflow-hidden relative z-10" style={{ background: 'repeating-conic-gradient(from -90deg at 50% 100%, #b8d4c7 0 10deg, #9bbfae 10deg 20deg)' }}>
-                        <svg viewBox="0 0 100 100" className="w-[6.5rem] h-[6.5rem] text-[#196b3a] relative z-10 translate-x-1 translate-y-1" fill="currentColor">
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-[2rem] flex items-center justify-center shadow-2xl mb-4 sm:mb-6 border border-white/30 overflow-hidden relative z-10 shrink-0" style={{ background: 'repeating-conic-gradient(from -90deg at 50% 100%, #b8d4c7 0 10deg, #9bbfae 10deg 20deg)' }}>
+                        <svg viewBox="0 0 100 100" className="w-[5.5rem] h-[5.5rem] sm:w-[6.5rem] sm:h-[6.5rem] text-[#196b3a] relative z-10 translate-x-1 translate-y-1" fill="currentColor">
                             <path d="M 4 12 h 12 l 10 18 h -12 z" />
                             <path d="M 20 30 h 78 l -16 35 h -50 z" />
                             <path d="M 16 42 h 6 l 12 26 h 44 v 7 h -52 z" />
@@ -41,99 +41,99 @@ const Welcome = () => {
                         </svg>
                     </div>
 
-                    <h1 className="text-4xl font-extrabold mb-4 leading-tight text-white drop-shadow-sm">Welcome to <span className="text-green-200">DMart Online</span></h1>
-                    <p className="text-lg text-green-50 mb-10 font-bold block">Your daily essentials, delivered fresh to your door.</p>
+                    <h1 className="text-2xl sm:text-4xl font-extrabold mb-2 sm:mb-3 leading-tight text-white drop-shadow-sm">Welcome to <span className="text-green-200">DMart Online</span></h1>
+                    <p className="text-sm sm:text-lg text-green-50 mb-4 sm:mb-6 font-bold block">Your daily essentials, delivered fresh to your door.</p>
 
-                    <div className="grid grid-cols-1 gap-4 w-full px-6 text-white">
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl py-3 px-5 flex items-center gap-3 font-bold border border-white/20 shadow-sm">
+                    <div className="grid grid-cols-1 gap-2 sm:gap-3 w-full px-2 sm:px-4 text-white">
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl py-2.5 sm:py-3 px-4 sm:px-5 flex items-center gap-3 font-bold border border-white/20 shadow-sm text-sm sm:text-base">
                             <Leaf className="w-5 h-5 text-green-200" /> Fresh Products
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl py-3 px-5 flex items-center gap-3 font-bold border border-white/20 shadow-sm">
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl py-2.5 sm:py-3 px-4 sm:px-5 flex items-center gap-3 font-bold border border-white/20 shadow-sm text-sm sm:text-base">
                             <Tag className="w-5 h-5 text-green-200" /> Best Price Guarantee
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl py-3 px-5 flex items-center gap-3 font-bold border border-white/20 shadow-sm">
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl py-2.5 sm:py-3 px-4 sm:px-5 flex items-center gap-3 font-bold border border-white/20 shadow-sm text-sm sm:text-base">
                             <Truck className="w-5 h-5 text-green-200" /> Fast Delivery
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-8 pb-8 animate-slideUp" style={{ animationDelay: '0.2s' }}>
-                    <div className="flex justify-center gap-3">
+                <div className="flex flex-col gap-4 sm:gap-5 pb-2 shrink-0 animate-slideUp" style={{ animationDelay: '0.2s' }}>
+                    <div className="flex justify-center gap-3 mt-2 sm:mt-4">
                         <span className="w-8 h-2.5 rounded-full bg-white"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-white/30"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-white/30"></span>
                     </div>
-                    <button onClick={nextSlide} className="w-full h-16 bg-white text-[#1a8a42] rounded-2xl font-black text-xl flex items-center justify-center gap-3 shadow-xl shadow-green-900/20 active:scale-95 transition-all outline-none">
+                    <button onClick={nextSlide} className="w-full h-14 sm:h-16 bg-white text-[#1a8a42] rounded-2xl font-black text-lg sm:text-xl flex items-center justify-center gap-3 shadow-xl shadow-green-900/20 active:scale-95 transition-all outline-none">
                         Get Started <ArrowRight className="w-6 h-6" />
                     </button>
                 </div>
             </div>
 
             {/* Slide 2 */}
-            <div className={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-between p-8 ${slide === 2 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#1a3a6e 0%,#2563eb 60%,#60a5fa 100%)' }}>
-                <div className="flex-1 flex flex-col justify-center items-center text-center mt-12">
-                    <div className="w-24 h-24 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center shadow-2xl mb-8 border border-white/30">
-                        <Store className="w-10 h-10 text-white" />
+            <div className={`absolute inset-0 h-full w-full transition-opacity duration-500 flex flex-col justify-between p-4 sm:p-6 ${slide === 2 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#1a3a6e 0%,#2563eb 60%,#60a5fa 100%)' }}>
+                <div className="flex-1 flex flex-col justify-center items-center text-center mt-4 sm:mt-6 overflow-hidden">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center shadow-2xl mb-4 sm:mb-6 border border-white/30 shrink-0">
+                        <Store className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                     </div>
-                    <h1 className="text-4xl font-extrabold mb-4 leading-tight">10,000+ <span className="text-blue-200">Products</span></h1>
-                    <p className="text-lg text-blue-50 mb-10 font-medium px-4">Groceries, fruits, vegetables, dairy, snacks & more – all in one app.</p>
-                    <div className="grid grid-cols-2 gap-4 w-full">
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center gap-2 border border-white/20">
-                            <Apple className="w-8 h-8 text-blue-100" />
-                            <span className="font-bold text-sm">Fruits & Veggies</span>
+                    <h1 className="text-2xl sm:text-4xl font-extrabold mb-2 sm:mb-3 leading-tight">10,000+ <span className="text-blue-200">Products</span></h1>
+                    <p className="text-sm sm:text-lg text-blue-50 mb-4 sm:mb-6 font-medium px-2 sm:px-4">Groceries, fruits, vegetables, dairy, snacks & more – all in one app.</p>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full">
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-2 border border-white/20">
+                            <Apple className="w-6 h-6 sm:w-8 sm:h-8 text-blue-100" />
+                            <span className="font-bold text-xs sm:text-sm">Fruits & Veggies</span>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center gap-2 border border-white/20">
-                            <UtensilsCrossed className="w-8 h-8 text-blue-100" />
-                            <span className="font-bold text-sm">Bakery</span>
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-2 border border-white/20">
+                            <UtensilsCrossed className="w-6 h-6 sm:w-8 sm:h-8 text-blue-100" />
+                            <span className="font-bold text-xs sm:text-sm">Bakery</span>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center gap-2 border border-white/20">
-                            <CupSoda className="w-8 h-8 text-blue-100" />
-                            <span className="font-bold text-sm">Beverages</span>
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-2 border border-white/20">
+                            <CupSoda className="w-6 h-6 sm:w-8 sm:h-8 text-blue-100" />
+                            <span className="font-bold text-xs sm:text-sm">Beverages</span>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center gap-2 border border-white/20">
-                            <Bath className="w-8 h-8 text-blue-100" />
-                            <span className="font-bold text-sm">Personal Care</span>
+                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 flex flex-col items-center gap-2 border border-white/20">
+                            <Bath className="w-6 h-6 sm:w-8 sm:h-8 text-blue-100" />
+                            <span className="font-bold text-xs sm:text-sm">Personal Care</span>
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-8 pb-8">
-                    <div className="flex justify-center gap-3">
+                <div className="flex flex-col gap-4 sm:gap-5 pb-2 shrink-0">
+                    <div className="flex justify-center gap-3 mt-2 sm:mt-4">
                         <span className="w-2.5 h-2.5 rounded-full bg-white/30"></span>
                         <span className="w-8 h-2.5 rounded-full bg-white"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-white/30"></span>
                     </div>
-                    <button onClick={nextSlide} className="w-full h-16 bg-blue-700 text-white rounded-2xl font-black text-xl flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition-all">
+                    <button onClick={nextSlide} className="w-full h-14 sm:h-16 bg-blue-700 text-white rounded-2xl font-black text-lg sm:text-xl flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition-all">
                         Next <ArrowRight className="w-6 h-6" />
                     </button>
                 </div>
             </div>
 
             {/* Slide 3 */}
-            <div className={`absolute inset-0 transition-opacity duration-500 flex flex-col justify-between p-8 ${slide === 3 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#7c2d12 0%,#ea580c 60%,#fb923c 100%)' }}>
-                <div className="flex-1 flex flex-col justify-center items-center text-center mt-12">
-                    <div className="w-24 h-24 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center shadow-2xl mb-8 border border-white/30">
-                        <Percent className="w-10 h-10 text-white" />
+            <div className={`absolute inset-0 h-full w-full transition-opacity duration-500 flex flex-col justify-between p-4 sm:p-6 ${slide === 3 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`} style={{ background: 'linear-gradient(160deg,#7c2d12 0%,#ea580c 60%,#fb923c 100%)' }}>
+                <div className="flex-1 flex flex-col justify-center items-center text-center mt-4 sm:mt-6 overflow-hidden">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center shadow-2xl mb-4 sm:mb-6 border border-white/30 shrink-0">
+                        <Percent className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                     </div>
-                    <h1 className="text-4xl font-extrabold mb-4 leading-tight">Exclusive <span className="text-orange-200">Offers</span> Daily!</h1>
-                    <p className="text-lg text-orange-50 mb-10 font-medium px-4">Save big with cashbacks, flash sales & loyalty rewards every day.</p>
-                    <div className="flex flex-col gap-4 w-full px-4 text-left">
-                        <div className="flex items-center gap-3 font-bold text-lg">
-                            <CheckCircle className="w-6 h-6 text-orange-200 shrink-0" /> Up to 70% off on select items
+                    <h1 className="text-2xl sm:text-4xl font-extrabold mb-2 sm:mb-3 leading-tight">Exclusive <span className="text-orange-200">Offers</span> Daily!</h1>
+                    <p className="text-sm sm:text-lg text-orange-50 mb-4 sm:mb-6 font-medium px-2 sm:px-4">Save big with cashbacks, flash sales & loyalty rewards every day.</p>
+                    <div className="flex flex-col gap-2 sm:gap-3 w-full px-2 sm:px-4 text-left">
+                        <div className="flex items-center gap-3 font-bold text-sm sm:text-lg">
+                            <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-200 shrink-0" /> Up to 70% off on select items
                         </div>
-                        <div className="flex items-center gap-3 font-bold text-lg">
-                            <CheckCircle className="w-6 h-6 text-orange-200 shrink-0" /> Cashback on every order
+                        <div className="flex items-center gap-3 font-bold text-sm sm:text-lg">
+                            <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-200 shrink-0" /> Cashback on every order
                         </div>
-                        <div className="flex items-center gap-3 font-bold text-lg">
-                            <CheckCircle className="w-6 h-6 text-orange-200 shrink-0" /> Free delivery above ₹499
+                        <div className="flex items-center gap-3 font-bold text-sm sm:text-lg">
+                            <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-orange-200 shrink-0" /> Free delivery above ₹499
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col gap-8 pb-8">
-                    <div className="flex justify-center gap-3">
+                <div className="flex flex-col gap-4 sm:gap-5 pb-2 shrink-0">
+                    <div className="flex justify-center gap-3 mt-2 sm:mt-4">
                         <span className="w-2.5 h-2.5 rounded-full bg-white/30"></span>
                         <span className="w-2.5 h-2.5 rounded-full bg-white/30"></span>
                         <span className="w-8 h-2.5 rounded-full bg-white"></span>
                     </div>
-                    <button onClick={nextSlide} className="w-full h-16 bg-orange-700 text-white rounded-2xl font-black text-xl flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition-all">
+                    <button onClick={nextSlide} className="w-full h-14 sm:h-16 bg-orange-700 text-white rounded-2xl font-black text-lg sm:text-xl flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition-all">
                         Shop Now <ShoppingCart className="w-6 h-6" />
                     </button>
                 </div>

@@ -5,6 +5,7 @@ import {
     Tag, User, ChevronRight, Flame, Zap, Star, Heart,
     Gift, Clock, Package, TrendingUp
 } from 'lucide-react';
+import { fetchProducts } from '../utils/api';
 
 const CATEGORIES = [
     { name: 'Fruits', emoji: '🍎', bg: 'bg-red-50', border: 'border-red-100', text: 'text-red-600' },
@@ -18,28 +19,26 @@ const CATEGORIES = [
     { name: 'Cleaning', emoji: '🧹', bg: 'bg-teal-50', border: 'border-teal-100', text: 'text-teal-600' },
     { name: 'Frozen', emoji: '❄️', bg: 'bg-cyan-50', border: 'border-cyan-100', text: 'text-cyan-600' },
 ];
-
 const BANNERS = [
     {
         title: '🔥 Mega Sale!', subtitle: 'Up to 50% OFF Fresh Produce',
         cta: 'Shop Fruits', catFilter: 'Fruits',
         bg: 'from-orange-500 to-rose-500',
-        img: 'https://thumbs.dreamstime.com/b/fruit-shop-766299.jpg'
+        img: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800&q=80'
     },
     {
         title: '🌿 Farm Fresh', subtitle: 'Organic Veggies at Best Prices',
         cta: 'Shop Veggies', catFilter: 'Vegetables',
         bg: 'from-green-600 to-emerald-500',
-        img: 'https://tiimg.tistatic.com/fp/1/005/845/organic-vegetable-659.jpg'
+        img: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80'
     },
     {
         title: '⚡ Flash Deal!', subtitle: 'Dairy & Bakery Flat 30% OFF',
         cta: 'Shop Now', catFilter: 'Dairy',
         bg: 'from-purple-600 to-indigo-600',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMzAt3yEiBPr81ARYSqVApxlZkbw1s0YZ0sQ&s'
+        img: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=800&q=80'
     },
 ];
-
 const DEALS = [
     { id: 'h1', name: 'Red Apples', price: 120, mrp: 150, image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=300&q=80', emoji: '🍎', cat: 'Fruits', badge: '20% OFF' },
     { id: 'h2', name: 'Amul Milk 1L', price: 60, mrp: 65, image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=300&q=80', emoji: '🥛', cat: 'Dairy', badge: '8% OFF' },
@@ -48,7 +47,6 @@ const DEALS = [
     { id: 'h5', name: 'Tropicana OJ', price: 90, mrp: 110, image: 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=80', emoji: '🧃', cat: 'Beverages', badge: '18% OFF' },
     { id: 'h6', name: 'Wheat Bread', price: 45, mrp: 52, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300&q=80', emoji: '🍞', cat: 'Bakery', badge: '13% OFF' },
 ];
-
 const Landing = () => {
     const [banner, setBanner] = useState(0);
     const [cartCount, setCartCount] = useState(0);
@@ -56,13 +54,28 @@ const Landing = () => {
     const [toast, setToast] = useState('');
     const timerRef = useRef(null);
     const navigate = useNavigate();
-    const [userPhoto, setUserPhoto] = useState(localStorage.getItem('userPhoto') || null);
-
+    const [hotDeals, setHotDeals] = useState(DEALS);
     useEffect(() => {
-        const syncPhoto = () => setUserPhoto(localStorage.getItem('userPhoto'));
-        window.addEventListener('storage', syncPhoto);
-        return () => window.removeEventListener('storage', syncPhoto);
+        const loadHotDeals = async () => {
+            try {
+                const response = await fetchProducts();
+                if (response.data && response.data.products && response.data.products.length > 0) {
+                    const sfProducts = response.data.products;
+                    const combined = [...DEALS];
+                    sfProducts.forEach(sfp => {
+                        const idx = combined.findIndex(lp => lp.id === sfp.id || lp.name === sfp.name);
+                        if (idx >= 0) combined[idx] = { ...combined[idx], ...sfp };
+                        else combined.unshift(sfp);
+                    });
+                    setHotDeals(combined.slice(0, 6));
+                }
+            } catch (err) {
+                console.warn("Using local deals as fallback");
+            }
+        };
+        loadHotDeals();
     }, []);
+
 
     useEffect(() => {
         const c = JSON.parse(localStorage.getItem('dmartCart') || '[]');
@@ -96,12 +109,12 @@ const Landing = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen pb-24" style={{ background: '#f7f8fa' }}>
+        <div className="flex flex-col min-h-full pb-24" style={{ background: '#f7f8fa' }}>
 
             {/* ── HEADER ── */}
             <header className="sticky top-0 z-50 shadow-md" style={{ background: 'linear-gradient(135deg, #e8460f 0%, #ff6b35 50%, #ff8c42 100%)' }}>
                 {/* Location + icons */}
-                <div className="flex items-center justify-between px-4 pt-4 pb-4">
+                <div className="flex items-center justify-between px-4 pt-10 pb-4">
                     <button className="flex items-center gap-1.5 group" onClick={() => navigate('/address')}>
                         <MapPin className="w-4 h-4 text-orange-100 group-hover:text-white" />
                         <div>
@@ -135,7 +148,7 @@ const Landing = () => {
             <div className="px-4 mt-4">
                 <div className="relative overflow-hidden rounded-3xl shadow-xl" style={{ height: '168px' }}>
                     {BANNERS.map((b, i) => (
-                        <div key={i} className={`absolute inset-0 transition-opacity duration-700 ${i === banner ? 'opacity-100' : 'opacity-0'}`}>
+                        <div key={i} className={`absolute inset-0 transition-opacity duration-700 ${i === banner ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
                             <img src={b.img} alt={b.title} className="absolute inset-0 w-full h-full object-cover" />
                             <div className={`absolute inset-0 bg-gradient-to-r ${b.bg} opacity-80`} />
                             <div className="absolute inset-0 p-5 flex flex-col justify-end">
@@ -208,22 +221,24 @@ const Landing = () => {
                     <button onClick={() => navigate('/offers')} className="text-xs font-black text-orange-500">View All →</button>
                 </div>
                 <div className="flex gap-3 overflow-x-auto px-4 pb-2" style={{ scrollbarWidth: 'none' }}>
-                    {DEALS.map(product => (
-                        <div key={product.id} className="shrink-0 w-36 bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden">
-                            <div className="relative h-28 bg-slate-50">
+                    {hotDeals.map(product => (
+                        <div key={product.id} className="shrink-0 w-36 bg-white rounded-3xl shadow-md border border-slate-100 overflow-hidden flex flex-col">
+                            <button type="button" onClick={() => navigate(`/product/${product.id}`, { state: { product } })} className="relative h-28 bg-slate-50 w-full text-left">
                                 <img src={product.image} alt={product.name} className="w-full h-full object-cover"
-                                    onError={(e) => { e.target.style.display = 'none'; }} />
-                                <div className="absolute inset-0 flex items-center justify-center text-4xl" style={{ display: 'none' }}>{product.emoji}</div>
-                                <span className="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-lg">{product.badge}</span>
-                            </div>
-                            <div className="p-2.5">
-                                <p className="text-[11px] font-bold text-slate-800 leading-tight mb-1 line-clamp-2">{product.name}</p>
-                                <div className="flex items-baseline gap-1 mb-2">
+                                    onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }} />
+                                <div className="hidden absolute inset-0 items-center justify-center text-4xl bg-slate-50">{product.emoji || '🛍️'}</div>
+                                {product.badge && <span className="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-lg">{product.badge}</span>}
+                            </button>
+                            <div className="p-2.5 flex-1 flex flex-col">
+                                <button type="button" onClick={() => navigate(`/product/${product.id}`, { state: { product } })} className="text-left mb-1 flex-1">
+                                    <p className="text-[11px] font-bold text-slate-800 leading-tight line-clamp-2">{product.name}</p>
+                                </button>
+                                <div className="flex items-baseline gap-1 mb-2 mt-auto">
                                     <span className="text-sm font-black text-slate-900">₹{product.price}</span>
-                                    <span className="text-[10px] text-slate-400 line-through font-bold">₹{product.mrp}</span>
+                                    {product.mrp && <span className="text-[10px] text-slate-400 line-through font-bold">₹{product.mrp}</span>}
                                 </div>
                                 <button
-                                    onClick={() => addToCart(product)}
+                                    onClick={(e) => { e.stopPropagation(); addToCart(product); }}
                                     className="w-full bg-orange-500 text-white text-[10px] font-black py-1.5 rounded-xl active:scale-95 transition-all"
                                 >+ Add</button>
                             </div>
@@ -325,39 +340,6 @@ const Landing = () => {
                     ))}
                 </div>
             </div>
-
-            {/* ── BOTTOM NAV ── */}
-            <nav className="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-white border-t border-slate-100 flex items-center justify-around px-2 h-[60px] z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.07)]">
-                <NavLink to="/home" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-orange-500' : 'text-slate-400'}`}>
-                    <Home className="w-5 h-5" />
-                    <span className="text-[9px] font-black">Home</span>
-                </NavLink>
-                <NavLink to="/products" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-orange-500' : 'text-slate-400'}`}>
-                    <Package className="w-5 h-5" />
-                    <span className="text-[9px] font-black">Products</span>
-                </NavLink>
-                <NavLink to="/offers" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-orange-500' : 'text-slate-400'}`}>
-                    <Tag className="w-5 h-5" />
-                    <span className="text-[9px] font-black">Offers</span>
-                </NavLink>
-                <NavLink to="/cart" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-orange-500' : 'text-slate-400'}`}>
-                    <div className="relative">
-                        <ShoppingCart className="w-5 h-5" />
-                        {cartCount > 0 && <span className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border-2 border-white">{cartCount}</span>}
-                    </div>
-                    <span className="text-[9px] font-black">Cart</span>
-                </NavLink>
-                <NavLink to="/account" className={({ isActive }) => `flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${isActive ? 'text-orange-500' : 'text-slate-400'}`}>
-                    <div className="w-6 h-6 rounded-full overflow-hidden border border-slate-200 bg-slate-50 flex items-center justify-center">
-                        {userPhoto ? (
-                            <img src={userPhoto} alt="Me" className="w-full h-full object-cover" />
-                        ) : (
-                            <User className="w-4 h-4" />
-                        )}
-                    </div>
-                    <span className="text-[9px] font-black">Account</span>
-                </NavLink>
-            </nav>
 
             {/* Toast */}
             {toast && (

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../utils/api';
 import {
     ArrowLeft,
     Phone,
@@ -132,7 +133,9 @@ const Support = () => {
     ]);
     const [callbackName, setCallbackName] = useState('');
     const [callbackPhone, setCallbackPhone] = useState('');
+    const [callbackIssue, setCallbackIssue] = useState('');
     const [callbackSent, setCallbackSent] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [toast, setToast] = useState('');
     const [tab, setTab] = useState('help'); // help | chat | stores
 
@@ -157,18 +160,37 @@ const Support = () => {
         }, 800);
     };
 
-    const requestCallback = () => {
+    const requestCallback = async () => {
         if (!callbackName.trim() || !callbackPhone.trim()) {
             showToast('Please fill your name and phone number.');
             return;
         }
-        setCallbackSent(true);
-        showToast('✅ Callback requested! We\'ll call you within 30 mins.');
+        setIsSubmitting(true);
+        try {
+            const contactId = localStorage.getItem('sfContactId');
+            const res = await api.post('/DmartSupportAPI', {
+                name: callbackName,
+                phone: callbackPhone,
+                issue: callbackIssue,
+                contactId: contactId || ''
+            });
+            if (res.data?.success) {
+                setCallbackSent(true);
+                showToast('✅ Callback requested! We\'ll call you within 30 mins.');
+            } else {
+                showToast('Failed to request callback. Please try again.');
+            }
+        } catch (err) {
+            console.error('Callback error:', err);
+            showToast('Error sending callback request.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     /* ─── render ─── */
     return (
-        <div className="min-h-screen bg-slate-50 pb-28 font-sans" style={{ maxWidth: 480, margin: '0 auto' }}>
+        <div className="min-h-full bg-slate-50 pb-28 font-sans" style={{ maxWidth: 480, margin: '0 auto' }}>
 
             {/* ── Header ── */}
             <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 pt-12 pb-20 px-5 relative overflow-hidden">
@@ -363,15 +385,20 @@ const Support = () => {
                                     type="tel" maxLength={10}
                                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-800 outline-none focus:border-blue-400 focus:bg-white transition-all"
                                 />
-                                <select className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 outline-none focus:border-blue-400">
-                                    <option>Select Issue Type</option>
-                                    {ISSUE_CATEGORIES.map(c => <option key={c.id}>{c.label}</option>)}
+                                <select 
+                                    value={callbackIssue}
+                                    onChange={e => setCallbackIssue(e.target.value)}
+                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 outline-none focus:border-blue-400"
+                                >
+                                    <option value="">Select Issue Type</option>
+                                    {ISSUE_CATEGORIES.map(c => <option key={c.id} value={c.label}>{c.label}</option>)}
                                 </select>
                                 <button
                                     onClick={requestCallback}
-                                    className="w-full bg-blue-900 text-white font-black text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-blue-100"
+                                    disabled={isSubmitting}
+                                    className={`w-full bg-blue-900 text-white font-black text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-100 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
                                 >
-                                    <Phone className="w-4 h-4" /> Request Callback
+                                    {isSubmitting ? 'Requesting...' : <><Phone className="w-4 h-4" /> Request Callback</>}
                                 </button>
                             </div>
                         )}

@@ -1,0 +1,55 @@
+<!-- dmartOrderItemRecordDashboard.html -->
+<template>
+    <lightning-card title="Order Item Dashboard" icon-name="custom:custom93">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+        <template if:false={isLoading}>
+            <div class="slds-p-around_medium">
+                <template if:true={itemInfo}>
+                    <div class="slds-grid slds-wrap slds-box slds-box_x-small slds-m-bottom_medium slds-theme_default">
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Item Details</p>
+                            <p class="slds-text-heading_small"><strong>{itemInfo.Product_Name__c}</strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Quantity</p>
+                            <p><strong>{itemInfo.Quantity__c}</strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Price (per item)</p>
+                            <p><strong><lightning-formatted-number value={itemInfo.Price__c} format-style="currency" currency-code="INR"></lightning-formatted-number></strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Total Line Price</p>
+                            <p><strong><lightning-formatted-number value={totalPrice} format-style="currency" currency-code="INR"></lightning-formatted-number></strong></p>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-2">
+                        <template if:true={orderInfo}>
+                            <div class="slds-box slds-box_x-small slds-theme_shade">
+                                <p class="slds-text-heading_small slds-m-bottom_small">Parent Order</p>
+                                <p><strong>Order:</strong> {orderInfo.Name}</p>
+                                <p><strong>Order Status:</strong> {orderInfo.Order_Status__c}</p>
+                            </div>
+                        </template>
+                    </div>
+                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <template if:true={productInfo}>
+                            <div class="slds-box slds-box_x-small slds-theme_shade">
+                                <p class="slds-text-heading_small slds-m-bottom_small">Linked Product</p>
+                                <p><strong>Product:</strong> {productInfo.Name}</p>
+                                <p><strong>Category:</strong> {productInfo.Category__c}</p>
+                                <p><strong>Current Stock:</strong> {productInfo.Stock_Quantity__c}</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>

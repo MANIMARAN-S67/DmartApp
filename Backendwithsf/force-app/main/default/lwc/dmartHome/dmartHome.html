@@ -1,0 +1,234 @@
+<template>
+    <div class="app-wrapper">
+
+        <!-- ==================== PREMIUM SIDEBAR ==================== -->
+        <aside class="sidebar-glass">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <span class="logo-bold">DMart</span>
+                    <span class="logo-light">Online</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <template for:each={navItems} for:item="item">
+                    <button key={item.id} class={item.cssClass} data-id={item.id} onclick={handleNavClick}>
+                        <div class="nav-icon-wrapper">
+                            <lightning-icon icon-name={item.icon} size="small" class="nav-icon"></lightning-icon>
+                        </div>
+                        <span class="nav-text">{item.label}</span>
+                    </button>
+                </template>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="btn-support">
+                    <lightning-icon icon-name="utility:listening" size="small" class="support-icon"></lightning-icon>
+                    <span>Support Desk</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <main class="main-glass">
+            
+            <!-- ===== TOP HEADER ===== -->
+            <header class="top-header-glass">
+                <div class="search-container">
+                    <lightning-icon icon-name="utility:search" size="x-small" class="search-icon"></lightning-icon>
+                    <input type="text" placeholder="Search orders, products..." class="search-input" onkeyup={handleSearchKey} />
+                </div>
+
+                <div class="header-actions">
+                    <div class="action-btn" onclick={handleProfileClick}>
+                        <lightning-icon icon-name="utility:notification" size="small" class="icon-dark"></lightning-icon>
+                        <span class="badge-pulse"></span>
+                    </div>
+                    
+                    <div class="profile-chip" onclick={handleProfileClick}>
+                        <div class="avatar-gradient">A</div>
+                        <div class="profile-info">
+                            <span class="profile-name">Admin User</span>
+                            <span class="profile-role">Store Manager</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ===== SCROLLABLE AREA ===== -->
+            <div class="scroll-area">
+                <div class="content-container">
+                    
+                    <template if:true={isLoading}>
+                        <div class="slds-align_absolute-center slds-p-around_xx-large">
+                            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template if:false={isLoading}>
+                        
+                        <!-- PREMIUM HERO BANNER -->
+                        <div class="hero-card">
+                            <img src={heroImageUrl} class="hero-bg" alt="Store Environment" />
+                            <div class="hero-overlay"></div>
+                            
+                            <div class="hero-content">
+                                <h2 class="greeting-text">{greeting}</h2>
+                                <h1 class="admin-text">Admin User</h1>
+                                <p class="hero-subtext">Store operations are running smoothly. Here is your daily summary.</p>
+                                
+                                <div class="hero-stats-row">
+                                    <div class="hero-stat-pill">
+                                        <lightning-icon icon-name="utility:graph" size="x-small" class="icon-white"></lightning-icon>
+                                        <span>+18% Sales</span>
+                                    </div>
+                                    <div class="hero-stat-pill">
+                                        <lightning-icon icon-name="utility:check" size="x-small" class="icon-white"></lightning-icon>
+                                        <span>All Systems Operational</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI CARDS GRID -->
+                        <div class="kpi-grid">
+                            <!-- Revenue -->
+                            <div class="kpi-glass-card">
+                                <div class="kpi-top">
+                                    <span class="kpi-title">Total Revenue</span>
+                                    <div class="icon-box-emerald">
+                                        <lightning-icon icon-name="utility:moneybag" size="small" class="icon-emerald"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="kpi-bottom">
+                                    <span class="kpi-value">₹2.35L</span>
+                                    <span class="kpi-trend trend-up">↑ 12.5%</span>
+                                </div>
+                            </div>
+
+                            <!-- Orders -->
+                            <div class="kpi-glass-card">
+                                <div class="kpi-top">
+                                    <span class="kpi-title">Total Orders</span>
+                                    <div class="icon-box-blue">
+                                        <lightning-icon icon-name="utility:form" size="small" class="icon-blue"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="kpi-bottom">
+                                    <span class="kpi-value">{summaryData.totalOrders}</span>
+                                    <span class="kpi-trend trend-up">↑ 8.2%</span>
+                                </div>
+                            </div>
+
+                            <!-- Customers -->
+                            <div class="kpi-glass-card">
+                                <div class="kpi-top">
+                                    <span class="kpi-title">Customers</span>
+                                    <div class="icon-box-purple">
+                                        <lightning-icon icon-name="utility:groups" size="small" class="icon-purple"></lightning-icon>
+                                    </div>
+                                </div>
+                                <div class="kpi-bottom">
+                                    <span class="kpi-value">{summaryData.totalUsers}</span>
+                                    <span class="kpi-trend trend-up">↑ 4.1%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MAIN DATA GRID -->
+                        <div class="data-grid">
+                            
+                            <!-- Left Column: Categories and Orders -->
+                            <div class="left-col">
+                                
+                                <!-- Top Categories -->
+                                <div class="glass-panel">
+                                    <div class="panel-header">
+                                        <h3>Top Categories</h3>
+                                        <button class="btn-text">View Details</button>
+                                    </div>
+                                    <div class="categories-row">
+                                        <template for:each={topCategories} for:item="cat">
+                                            <div key={cat.id} class="category-box">
+                                                <div class={cat.colorClass}>
+                                                    <lightning-icon icon-name={cat.icon} size="medium"></lightning-icon>
+                                                </div>
+                                                <span class="cat-name">{cat.name}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Recent Orders -->
+                                <div class="glass-panel mt-4">
+                                    <div class="panel-header">
+                                        <h3>Recent Orders</h3>
+                                    </div>
+                                    <table class="premium-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Order ID</th>
+                                                <th>Customer</th>
+                                                <th>Amount</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template for:each={processedOrders} for:item="order">
+                                                <tr key={order.Id} class="table-row-hover">
+                                                    <td class="font-bold">{order.order_Id__c}</td>
+                                                    <td>{order.customerName}</td>
+                                                    <td class="font-semibold">₹{order.Total_Amount__c}</td>
+                                                    <td><span class={order.statusClass}>{order.Order_Status__c}</span></td>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                            <!-- Right Column: Low Stock Alerts -->
+                            <div class="right-col">
+                                <div class="glass-panel panel-full-height">
+                                    <div class="panel-header">
+                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                            <lightning-icon icon-name="utility:warning" size="small" class="icon-red"></lightning-icon>
+                                            <h3>Low Stock Alerts</h3>
+                                        </div>
+                                        <span class="alert-count">{lowStockCount} items</span>
+                                    </div>
+                                    
+                                    <div class="alerts-list">
+                                        <template for:each={processedLowStockProducts} for:item="item">
+                                            <div key={item.Id} class="alert-item">
+                                                <div class="alert-info">
+                                                    <span class="item-name">{item.Name}</span>
+                                                    <span class="item-cat">{item.Category__c}</span>
+                                                </div>
+                                                <div class="alert-stock">
+                                                    <template if:true={item.isCritical}>
+                                                        <span class="stock-critical">{item.Stock_Quantity__c} left</span>
+                                                    </template>
+                                                    <template if:false={item.isCritical}>
+                                                        <span class="stock-warning">{item.Stock_Quantity__c} left</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template if:false={lowStockCount}>
+                                            <div class="empty-state">
+                                                <p>All stock levels are optimal.</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </main>
+    </div>
+</template>

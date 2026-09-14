@@ -1,0 +1,53 @@
+<template>
+    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+        
+        <!-- Order Status Distribution -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+            <lightning-card title="Order Status Breakdown" icon-name="utility:chart">
+                <div class="slds-p-around_medium chart-card">
+                    <template if:true={hasStatusData}>
+                        <template for:each={processedStatusData} for:item="item">
+                            <div key={item.status} class="slds-m-bottom_medium">
+                                <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                    <span class="font-semibold text-muted">{item.status}</span>
+                                    <span class="font-bold">{item.count} orders ({item.percentage}%)</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill fill-blue" style={item.barStyle}></div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:false={hasStatusData}>
+                        <p class="slds-text-color_weak slds-text-align_center">No order status data available.</p>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+        
+        <!-- Product Category Breakdown -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-m-bottom_small">
+            <lightning-card title="Product Categories Inventory" icon-name="utility:graph">
+                <div class="slds-p-around_medium chart-card">
+                    <template if:true={hasCategoryData}>
+                        <template for:each={processedCategoryData} for:item="item">
+                            <div key={item.category} class="slds-m-bottom_medium">
+                                <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                                    <span class="font-semibold text-muted">{item.category}</span>
+                                    <span class="font-bold">{item.count} items ({item.percentage}%)</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill fill-green" style={item.barStyle}></div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:false={hasCategoryData}>
+                        <p class="slds-text-color_weak slds-text-align_center">No product category data available.</p>
+                    </template>
+                </div>
+            </lightning-card>
+        </div>
+        
+    </div>
+</template>

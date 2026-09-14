@@ -1,0 +1,204 @@
+<template>
+    <lightning-card title="DMart User Admin Dashboard" icon-name="custom:custom68">
+        <!-- Main Container -->
+        <div class="slds-p-around_medium bg-container">
+            <div class="slds-grid slds-wrap slds-gutters">
+                
+                <!-- Left Pane: User Directory -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 slds-border_right pane-container">
+                    <div class="slds-m-bottom_medium slds-p-right_small">
+                        <div class="slds-text-heading_small slds-m-bottom_small flex-align">
+                            <lightning-icon icon-name="standard:user" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span>User Directory</span>
+                        </div>
+                        <lightning-input 
+                            type="search" 
+                            label="Search Users" 
+                            variant="label-hidden"
+                            placeholder="Search by name or email..." 
+                            onchange={handleSearchChange}
+                            value={searchKey}
+                            class="slds-m-bottom_small search-input">
+                        </lightning-input>
+                    </div>
+                    
+                    <div class="table-container">
+                        <template if:true={isLoadingUsers}>
+                            <div class="slds-align_absolute-center slds-p-around_large">
+                                <lightning-spinner alternative-text="Loading users" size="medium"></lightning-spinner>
+                            </div>
+                        </template>
+                        <template if:false={isLoadingUsers}>
+                            <template if:true={hasUsers}>
+                                <div class="scrollable-table">
+                                    <lightning-datatable 
+                                        key-field="Id" 
+                                        data={filteredUsers} 
+                                        columns={userColumns} 
+                                        max-row-selection="1" 
+                                        onrowselection={handleRowSelection}
+                                        hide-checkbox-column="false"
+                                        selected-rows={selectedUserRows}>
+                                    </lightning-datatable>
+                                </div>
+                            </template>
+                            <template if:false={hasUsers}>
+                                <div class="slds-text-align_center slds-text-color_weak slds-p-around_medium">
+                                    <p>No registered users found.</p>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+                
+                <!-- Right Pane: User Details (Orders and Activity Logs) -->
+                <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12 detail-pane-container">
+                    <template if:true={selectedUserId}>
+                        <!-- Selected User Header -->
+                        <div class="slds-box slds-theme_shade slds-m-bottom_medium header-box">
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <div class="slds-col slds-grow_none slds-m-right_medium">
+                                    <span class="slds-avatar slds-avatar_large">
+                                        <lightning-icon icon-name="standard:avatar" size="large" alternative-text={selectedUserName}></lightning-icon>
+                                    </span>
+                                </div>
+                                <div class="slds-col">
+                                    <h2 class="slds-text-heading_medium slds-truncate font-bold">{selectedUserName}</h2>
+                                    <div class="slds-grid slds-wrap slds-m-top_xx-small text-muted">
+                                        <div class="slds-col slds-m-right_medium">
+                                            <lightning-icon icon-name="utility:email" size="xx-small" class="slds-m-right_xx-small icon-gray"></lightning-icon>
+                                            <span>{selectedUserEmail}</span>
+                                        </div>
+                                        <template if:true={selectedUserPhone}>
+                                            <div class="slds-col slds-m-right_medium">
+                                                <lightning-icon icon-name="utility:call" size="xx-small" class="slds-m-right_xx-small icon-gray"></lightning-icon>
+                                                <span>{selectedUserPhone}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <template if:true={selectedUserAddress}>
+                                        <div class="slds-m-top_x-small text-muted">
+                                            <lightning-icon icon-name="utility:checkin" size="xx-small" class="slds-m-right_xx-small icon-gray"></lightning-icon>
+                                            <span class="font-semibold">Address: </span>
+                                            <span>{selectedUserAddress}</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tabset for related lists -->
+                        <lightning-tabset variant="scoped">
+                            <!-- Orders Tab -->
+                            <lightning-tab label={ordersTabLabel}>
+                                <div class="slds-p-around_small list-container">
+                                    <template if:true={isLoadingDetails}>
+                                        <div class="slds-align_absolute-center slds-p-around_large spinner-container">
+                                            <lightning-spinner alternative-text="Loading details" size="medium"></lightning-spinner>
+                                        </div>
+                                    </template>
+                                    <template if:false={isLoadingDetails}>
+                                        <template if:true={hasOrders}>
+                                            <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                                                <template for:each={orders} for:item="order">
+                                                    <lightning-accordion-section 
+                                                        key={order.Id} 
+                                                        name={order.Id} 
+                                                        label={order.Name}>
+                                                        
+                                                        <div class="slds-grid slds-wrap slds-m-bottom_medium accordion-content">
+                                                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-bottom_small">
+                                                                <p class="slds-text-title slds-text-color_weak">Order ID</p>
+                                                                <p class="slds-text-body_regular font-semibold">{order.order_Id__c}</p>
+                                                            </div>
+                                                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-bottom_small">
+                                                                <p class="slds-text-title slds-text-color_weak">Order Date</p>
+                                                                <p class="slds-text-body_regular">{order.formattedDate}</p>
+                                                            </div>
+                                                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-bottom_small">
+                                                                <p class="slds-text-title slds-text-color_weak">Total Amount</p>
+                                                                <p class="slds-text-body_regular price-text">
+                                                                    <lightning-formatted-number value={order.Total_Amount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                                                </p>
+                                                            </div>
+                                                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-p-bottom_small">
+                                                                <p class="slds-text-title slds-text-color_weak">Status Info</p>
+                                                                <div class="flex-align">
+                                                                    <span class="slds-m-right_x-small"><lightning-badge label={order.Order_Status__c}></lightning-badge></span>
+                                                                    <span><lightning-badge label={order.Payment_Status__c} class="slds-theme_success"></lightning-badge></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <template if:true={order.hasItems}>
+                                                            <div class="slds-box slds-p-around_none inner-table">
+                                                                <lightning-datatable
+                                                                    key-field="Id"
+                                                                    data={order.items}
+                                                                    columns={orderItemColumns}
+                                                                    hide-checkbox-column="true">
+                                                                </lightning-datatable>
+                                                            </div>
+                                                        </template>
+                                                        <template if:false={order.hasItems}>
+                                                            <p class="slds-text-color_weak slds-m-top_small">No items in this order.</p>
+                                                        </template>
+                                                    </lightning-accordion-section>
+                                                </template>
+                                            </lightning-accordion>
+                                        </template>
+                                        <template if:false={hasOrders}>
+                                            <div class="slds-text-align_center slds-text-color_weak slds-p-around_large">
+                                                <lightning-icon icon-name="utility:open_folder" size="large" class="slds-m-bottom_small icon-muted"></lightning-icon>
+                                                <p>No orders found for this user.</p>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </lightning-tab>
+                            
+                            <!-- Activity Logs Tab -->
+                            <lightning-tab label={logsTabLabel}>
+                                <div class="slds-p-around_small list-container">
+                                    <template if:true={isLoadingDetails}>
+                                        <div class="slds-align_absolute-center slds-p-around_large spinner-container">
+                                            <lightning-spinner alternative-text="Loading details" size="medium"></lightning-spinner>
+                                        </div>
+                                    </template>
+                                    <template if:false={isLoadingDetails}>
+                                        <template if:true={hasLogs}>
+                                            <div class="scrollable-table">
+                                                <lightning-datatable
+                                                    key-field="Id"
+                                                    data={activityLogs}
+                                                    columns={logColumns}
+                                                    hide-checkbox-column="true">
+                                                </lightning-datatable>
+                                            </div>
+                                        </template>
+                                        <template if:false={hasLogs}>
+                                            <div class="slds-text-align_center slds-text-color_weak slds-p-around_large">
+                                                <lightning-icon icon-name="utility:event" size="large" class="slds-m-bottom_small icon-muted"></lightning-icon>
+                                                <p>No activity logs found for this user.</p>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </div>
+                            </lightning-tab>
+                        </lightning-tabset>
+                    </template>
+                    
+                    <template if:false={selectedUserId}>
+                        <!-- Empty State Placeholder -->
+                        <div class="slds-align_absolute-center flex-col empty-state">
+                            <lightning-icon icon-name="utility:people" size="large" class="slds-m-bottom_medium icon-brand"></lightning-icon>
+                            <h3 class="slds-text-heading_medium slds-m-bottom_x-small font-semibold text-center">No User Selected</h3>
+                            <p class="slds-text-color_weak text-center">Select a user from the directory to inspect their orders and activity history.</p>
+                        </div>
+                    </template>
+                </div>
+                
+            </div>
+        </div>
+    </lightning-card>
+</template>

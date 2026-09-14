@@ -1,0 +1,77 @@
+<template>
+    <div class="dashboard-wrapper">
+
+        <!-- Header -->
+        <c-dashboard-header onrefresh={handleRefresh}></c-dashboard-header>
+
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-p-around_xx-large">
+                <lightning-spinner alternative-text="Loading dashboard" size="large"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error State -->
+        <template if:true={hasError}>
+            <div class="slds-notify slds-notify_alert slds-alert_error slds-m-around_medium" role="alert">
+                <lightning-icon icon-name="utility:error" size="small" class="slds-m-right_small"></lightning-icon>
+                <h2>{errorMessage}</h2>
+            </div>
+        </template>
+
+        <!-- Dashboard Body -->
+        <template if:false={isLoading}>
+            <template if:false={hasError}>
+                <div class="slds-p-horizontal_medium slds-p-bottom_medium dashboard-body">
+
+                    <!-- KPI Summary Row -->
+                    <c-dashboard-summary
+                        total-users={summaryData.totalUsers}
+                        total-products={summaryData.totalProducts}
+                        total-orders={summaryData.totalOrders}
+                        revenue={summaryData.revenue}>
+                    </c-dashboard-summary>
+
+                    <!-- Charts Row -->
+                    <c-sales-charts
+                        order-status-counts={summaryData.orderStatusCounts}
+                        category-counts={summaryData.categoryCounts}>
+                    </c-sales-charts>
+
+                    <!-- Main Content: Orders + Activity (side by side) -->
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+
+                        <!-- Recent Orders Table -->
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+                            <c-order-table orders={summaryData.recentOrders}></c-order-table>
+                        </div>
+
+                        <!-- Activity Log -->
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12">
+                            <c-activity-log activities={summaryData.recentActivities}></c-activity-log>
+                        </div>
+                    </div>
+
+                    <!-- Products + Users Row -->
+                    <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+
+                        <!-- Products Table -->
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_7-of-12">
+                            <c-product-table
+                                products={summaryData.recentProducts}
+                                low-stock-products={summaryData.lowStockProducts}>
+                            </c-product-table>
+                        </div>
+
+                        <!-- Recent Users Table -->
+                        <div class="slds-col slds-size_1-of-1 slds-large-size_5-of-12">
+                            <c-user-table users={summaryData.recentUsers}></c-user-table>
+                        </div>
+                    </div>
+
+                </div>
+            </template>
+        </template>
+
+    </div>
+</template>

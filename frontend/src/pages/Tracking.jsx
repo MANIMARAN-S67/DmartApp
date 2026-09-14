@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     ArrowLeft, Phone, Shield, ShieldCheck, CheckCircle,
     Package, Truck, Home as HomeIcon, MessageSquare, Navigation
 } from 'lucide-react';
+import api from '../utils/api';
 
 const Tracking = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    const initialOrderId = location.state?.orderId || location.state?.order?.id || localStorage.getItem('lastOrderId') || 'DM-00000';
+    const contactId = localStorage.getItem('sfContactId');
+    
+    const [order, setOrder] = useState(location.state?.order || null);
     const [progress, setProgress] = useState(0);
     const [eta, setEta] = useState(25);
     const [toast, setToast] = useState('');
@@ -18,20 +25,48 @@ const Tracking = () => {
     };
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setProgress(p => {
-                if (p >= 100) {
-                    clearInterval(timer);
-                    setDelivered(true);
-                    showToast('✅ Order Delivered successfully!');
-                    return 100;
+        const updateStateFromStatus = (status) => {
+            let p = 15;
+            let e = 25;
+            if (status === 'Pending' || status === 'Order Confirmed') { p = 15; e = 25; }
+            else if (status === 'Packed' || status === 'Order Packed & Ready') { p = 40; e = 15; }
+            else if (status === 'Out for Delivery') { p = 75; e = 5; }
+            else if (status === 'Delivered') { p = 100; e = 0; }
+            else if (status === 'Cancelled') { p = 0; e = 0; }
+            
+            setProgress(p);
+            setEta(e);
+            
+            if (status === 'Delivered') {
+                setDelivered(true);
+            }
+        };
+
+        const fetchStatus = async () => {
+            if (!contactId) return;
+            try {
+                const res = await api.get(`/DmartOrderAPI/${contactId}`);
+                if (res.data?.success) {
+                    const foundOrder = res.data.orders.find(o => o.id === initialOrderId);
+                    if (foundOrder) {
+                        setOrder(foundOrder);
+                        updateStateFromStatus(foundOrder.status);
+                    }
                 }
-                return p + 1.5;
-            });
-            setEta(e => e > 0 ? Math.max(0, e - 0.4) : 0);
-        }, 800);
+            } catch (err) {
+                console.warn("Failed to fetch order status", err);
+            }
+        };
+
+        if (order?.status) {
+            updateStateFromStatus(order.status);
+        }
+        
+        fetchStatus();
+
+        const timer = setInterval(fetchStatus, 5000);
         return () => clearInterval(timer);
-    }, []);
+    }, [contactId, initialOrderId, order?.status]);
 
     // Calculate scooter position on map overlay (keeps within bounds)
     const scooterTop = Math.min(15 + progress * 0.45, 58);
@@ -45,7 +80,7 @@ const Tracking = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white flex flex-col font-sans max-w-[480px] mx-auto overflow-hidden animate-fadeIn">
+        <div className="min-h-full bg-white flex flex-col font-sans max-w-[480px] mx-auto overflow-hidden animate-fadeIn">
 
             {/* ── MAP SECTION ── */}
             <div className="relative w-full overflow-hidden bg-blue-50" style={{ minHeight: '340px' }}>
@@ -145,9 +180,11 @@ const Tracking = () => {
                 <div className="bg-blue-50 border border-blue-100 rounded-2xl px-4 py-3 flex items-center justify-between mb-5">
                     <div>
                         <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Order</p>
-                        <p className="font-black text-blue-900 text-sm">#DM-87234</p>
+                        <p className="font-black text-blue-900 text-sm">#{initialOrderId.length > 10 ? initialOrderId.slice(-8).toUpperCase() : initialOrderId}</p>
                     </div>
-                    <span className="bg-blue-600 text-white text-[10px] font-black px-3 py-1.5 rounded-xl">🚚 Out for Delivery</span>
+                    <span className={`text-white text-[10px] font-black px-3 py-1.5 rounded-xl ${order?.status === 'Delivered' ? 'bg-green-500' : order?.status === 'Cancelled' ? 'bg-red-500' : 'bg-blue-600'}`}>
+                        {order?.status === 'Delivered' ? '✅ Delivered' : order?.status === 'Cancelled' ? '❌ Cancelled' : `🚚 ${order?.status || 'Processing'}`}
+                    </span>
                 </div>
 
                 {/* Delivery Partner */}

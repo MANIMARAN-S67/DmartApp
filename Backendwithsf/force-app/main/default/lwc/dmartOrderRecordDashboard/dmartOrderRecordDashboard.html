@@ -1,0 +1,56 @@
+<!-- dmartOrderRecordDashboard.html -->
+<template>
+    <lightning-card title="Order Details Dashboard" icon-name="custom:custom18">
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+        <template if:false={isLoading}>
+            <div class="slds-p-around_medium">
+                <template if:true={orderInfo}>
+                    <div class="slds-grid slds-wrap slds-box slds-box_x-small slds-m-bottom_medium slds-theme_default">
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Order ID</p>
+                            <p class="slds-text-heading_small"><strong>{orderInfo.order_Id__c}</strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Total Amount</p>
+                            <p class="slds-text-heading_small"><strong><lightning-formatted-number value={orderInfo.Total_Amount__c} format-style="currency" currency-code="INR"></lightning-formatted-number></strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Status</p>
+                            <p><strong>{orderInfo.Order_Status__c}</strong></p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-bottom_small">
+                            <p class="slds-text-title slds-m-bottom_xx-small">Payment Status</p>
+                            <p><strong>{orderInfo.Payment_Status__c}</strong></p>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={userInfo}>
+                    <div class="slds-box slds-box_x-small slds-m-bottom_medium slds-theme_shade">
+                        <p class="slds-text-heading_small slds-m-bottom_small">Customer Information</p>
+                        <p><strong>Name:</strong> {userInfo.Name}</p>
+                        <p><strong>Email:</strong> {userInfo.Email__c}</p>
+                        <p><strong>Phone:</strong> {userInfo.Phone__c}</p>
+                    </div>
+                </template>
+
+                <p class="slds-text-heading_small slds-m-bottom_small slds-m-top_medium">Order Items ({itemsCount})</p>
+                <template if:true={hasItems}>
+                    <div style="height: 300px;">
+                        <lightning-datatable 
+                            key-field="Id" 
+                            data={orderItems} 
+                            columns={itemColumns} 
+                            hide-checkbox-column="true">
+                        </lightning-datatable>
+                    </div>
+                </template>
+                <template if:false={hasItems}>
+                    <p class="slds-text-color_weak slds-text-align_center slds-p-around_medium border">No items found for this order.</p>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+</template>

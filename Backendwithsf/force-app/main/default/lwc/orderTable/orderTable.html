@@ -1,0 +1,39 @@
+<template>
+    <lightning-card title="Order Management" icon-name="standard:orders">
+        <div class="slds-p-around_medium">
+            <template if:true={hasOrders}>
+                <div class="scrollable-table">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col"><div class="slds-truncate">Order #</div></th>
+                                <th scope="col"><div class="slds-truncate">Amount</div></th>
+                                <th scope="col"><div class="slds-truncate">Order Status</div></th>
+                                <th scope="col"><div class="slds-truncate">Payment</div></th>
+                                <th scope="col"><div class="slds-truncate">Date</div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={processedOrders} for:item="order">
+                                <tr key={order.Id}>
+                                    <td><div class="slds-truncate font-semibold">{order.order_Id__c}</div></td>
+                                    <td>
+                                        <div class="slds-truncate price-text">
+                                            <lightning-formatted-number value={order.Total_Amount__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td><div class="slds-truncate"><span class={order.orderBadgeClass}>{order.Order_Status__c}</span></div></td>
+                                    <td><div class="slds-truncate"><span class={order.paymentBadgeClass}>{order.Payment_Status__c}</span></div></td>
+                                    <td><div class="slds-truncate text-muted">{order.formattedDate}</div></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template if:false={hasOrders}>
+                <p class="slds-text-color_weak slds-text-align_center slds-p-around_medium">No orders found.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

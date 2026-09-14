@@ -5,7 +5,7 @@ import {
     Loader2, Lock, CreditCard, Smartphone, Wallet,
     Package, ChevronRight, BadgeCheck, Zap, Tag,
 } from 'lucide-react';
-import api from '../utils/api';
+import api, { logActivity } from '../utils/api';
 
 /* ─── UPI app options ─── */
 const UPI_APPS = [
@@ -77,6 +77,7 @@ const Payment = () => {
     const [cardExpiry, setCardExpiry] = useState('');
     const [cardCvv, setCardCvv] = useState('');
     const [saveCard, setSaveCard] = useState(false);
+    const [savedCards, setSavedCards] = useState(JSON.parse(localStorage.getItem('dmartPayments') || '[]'));
     const navigate = useNavigate();
 
     const subtotal = cart.reduce((a, i) => a + i.qty * i.price, 0);
@@ -112,6 +113,22 @@ const Payment = () => {
         localStorage.setItem('lastPaymentMethod', paymentModeName);
         localStorage.setItem('dmartLastCart', localStorage.getItem('dmartCart') || '[]');
 
+        // Trigger UPI deep link for mobile devices
+        if (payMethod === 'UPI') {
+            try {
+                let upiString = `upi://pay?pa=dmart.store@upi&pn=DMart%20Online&am=${total}&cu=INR&tn=Order%20Payment`;
+                if (upiApp === 'GPay') upiString = `tez://upi/pay?pa=dmart.store@upi&pn=DMart%20Online&am=${total}&cu=INR&tn=Order%20Payment`;
+                else if (upiApp === 'PhonePe') upiString = `phonepe://pay?pa=dmart.store@upi&pn=DMart%20Online&am=${total}&cu=INR&tn=Order%20Payment`;
+                else if (upiApp === 'Paytm') upiString = `paytmmp://pay?pa=dmart.store@upi&pn=DMart%20Online&am=${total}&cu=INR&tn=Order%20Payment`;
+
+                window.location.href = upiString;
+                // Wait briefly for the intent to trigger
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            } catch (e) {
+                console.log("UPI intent failed:", e);
+            }
+        }
+
         const finalize = (orderId) => {
             localStorage.setItem('lastOrderId', orderId);
             localStorage.setItem('lastOrderTotal', total.toString());
@@ -121,12 +138,53 @@ const Payment = () => {
             setTimeout(() => navigate('/order-success'), 1500);
         };
 
+        const localOrderId = 'DM-' + Date.now();
+
         try {
             const cId = localStorage.getItem('sfContactId');
-            const res = await api.post('/orders', { contactId: cId, totalAmount: total, items: cart });
-            finalize(res.data?.orderId || 'DM-' + Math.floor(Math.random() * 90000 + 10000));
-        } catch {
-            finalize('DM-' + Math.floor(Math.random() * 90000 + 10000));
+
+            // Save card securely to profile
+            if (payMethod === 'CARD' && saveCard) {
+                const newCard = {
+                    id: 'CARD_' + Date.now(),
+                    cardNumber: cardNumber,
+                    cardName: cardName,
+                    cardExpiry: cardExpiry,
+                    brand: cardNumber.startsWith('4') ? 'VISA' : (cardNumber.startsWith('5') ? 'MC' : 'RuPay')
+                };
+                const updatedCards = [...savedCards, newCard];
+                setSavedCards(updatedCards);
+                localStorage.setItem('dmartPayments', JSON.stringify(updatedCards));
+                
+                // Sync to Salesforce
+                api.post('/DmartUserAPI_v2/update-profile', {
+                    userId: cId,
+                    paymentMethods: JSON.stringify(updatedCards)
+                }).catch(e => console.error("Failed to sync saved card", e));
+            }
+            
+            // Send order to Salesforce via Apex REST API
+            const res = await api.post('/DmartOrderAPI', { 
+                contactId: cId, 
+                totalAmount: total, 
+                items: cart 
+            });
+
+            if (res.data && res.data.success) {
+                const sfOrderId = res.data.orderId || localOrderId;
+                console.log("✅ Order synced to Salesforce:", sfOrderId);
+                logActivity(cId, 'ORDER_PLACED', '/payment', `Order ${sfOrderId} placed for ₹${total} via ${paymentModeName}`);
+                finalize(sfOrderId);
+            } else {
+                throw new Error(res.data.message || "Unknown Salesforce error");
+            }
+        } catch (err) {
+            console.error("❌ Salesforce order sync failed - using local fallback:", err.message);
+            // Fallback: Still allow user to see success screen even if Salesforce sync fails temporarily
+            const localOrders = JSON.parse(localStorage.getItem('localOrders') || '[]');
+            localOrders.unshift({ id: localOrderId, totalAmount: total, status: 'Processing', createdDate: new Date().toISOString(), items: cart });
+            localStorage.setItem('localOrders', JSON.stringify(localOrders));
+            finalize(localOrderId);
         }
     };
 
@@ -135,7 +193,7 @@ const Payment = () => {
     /* ── Success screen ── */
     if (status === 'success') {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 flex flex-col items-center justify-center p-8 text-center">
+            <div className="min-h-full bg-gradient-to-br from-green-50 to-emerald-50 flex flex-col items-center justify-center p-8 text-center">
                 <div className="w-28 h-28 bg-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-green-100 border-4 border-green-100 animate-bounce">
                     <CheckCircle className="w-14 h-14 text-green-500" />
                 </div>
@@ -148,7 +206,7 @@ const Payment = () => {
 
     /* ── Main ── */
     return (
-        <div className="min-h-screen bg-slate-100 flex flex-col font-sans" style={{ maxWidth: 480, margin: '0 auto' }}>
+        <div className="min-h-full bg-slate-100 flex flex-col font-sans" style={{ maxWidth: 480, margin: '0 auto' }}>
 
             {/* ── HERO HEADER ── */}
             <div className="bg-gradient-to-br from-red-700 via-red-600 to-orange-500 pt-12 pb-20 px-5 relative overflow-hidden">
@@ -321,6 +379,32 @@ const Payment = () => {
 
                         {payMethod === 'CARD' && (
                             <div className="px-4 pb-4 border-t border-slate-50 pt-3 space-y-3" onClick={e => e.stopPropagation()}>
+                                
+                                {/* Saved Cards */}
+                                {savedCards.length > 0 && (
+                                    <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 snap-x hide-scrollbar">
+                                        {savedCards.map(c => (
+                                            <div 
+                                                key={c.id} 
+                                                onClick={() => {
+                                                    setCardNumber(c.cardNumber);
+                                                    setCardName(c.cardName);
+                                                    setCardExpiry(c.cardExpiry);
+                                                    setSaveCard(false); // Already saved
+                                                }}
+                                                className={`min-w-[160px] snap-start border-2 rounded-xl p-3 cursor-pointer transition-all ${cardNumber === c.cardNumber ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 bg-white'}`}
+                                            >
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <span className="text-[10px] font-black text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded">{c.brand}</span>
+                                                </div>
+                                                <p className="text-sm font-black text-slate-800 tracking-widest mt-2">
+                                                    •••• {c.cardNumber.slice(-4)}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
                                 {/* Card Preview */}
                                 <div className="bg-gradient-to-br from-blue-700 to-indigo-800 rounded-2xl p-4 text-white relative overflow-hidden mb-3">
                                     <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -490,8 +574,8 @@ const Payment = () => {
                     onClick={handlePayment}
                     disabled={!isPayReady() || status === 'processing'}
                     className={`w-full h-16 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all duration-300 ${isPayReady() && status !== 'processing'
-                            ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 text-white shadow-xl shadow-red-200/60 active:scale-95'
-                            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500 text-white shadow-xl shadow-red-200/60 active:scale-95'
+                        : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                         }`}
                 >
                     {status === 'processing'

@@ -10,17 +10,43 @@ import {
   Truck,
   ShieldCheck,
   Home,
+  Loader2,
 } from 'lucide-react';
 import { ALL_PRODUCTS, getProductById } from '../data/products';
+import { fetchProductById } from '../utils/api';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const initialProduct = location.state?.product || getProductById(id);
+  const [product, setProduct] = useState(location.state?.product || getProductById(id) || null);
+  const [loading, setLoading] = useState(!product);
 
-  const [product] = useState(initialProduct || null);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [product?.id]);
+
+  useEffect(() => {
+    const fetchSFProduct = async () => {
+      if (!product && id) {
+        try {
+          setLoading(true);
+          const response = await fetchProductById(id);
+          if (response.data && response.data.success && response.data.product) {
+            setProduct(response.data.product);
+          }
+        } catch (err) {
+          console.error("Error fetching product:", err);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false);
+      }
+    };
+    fetchSFProduct();
+  }, [id, product]);
   const [cart, setCart] = useState(() =>
     JSON.parse(localStorage.getItem('dmartCart') || '[]'),
   );
@@ -80,9 +106,18 @@ const ProductDetails = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-full bg-white flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
+        <p className="text-sm font-black text-slate-400 uppercase tracking-widest animate-pulse">Loading Product...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-6 text-center">
+      <div className="min-h-full bg-white flex flex-col items-center justify-center px-6 text-center">
         <h2 className="text-2xl font-black text-slate-900 mb-2">
           Product not found
         </h2>
@@ -107,7 +142,7 @@ const ProductDetails = () => {
   const isWished = wishlist.includes(product.id);
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-36 max-w-[480px] mx-auto animate-fadeIn">
+    <div className="min-h-full bg-slate-50 pb-36 max-w-[480px] mx-auto animate-fadeIn">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl px-5 py-4 border-b border-slate-100 flex items-center justify-between max-w-[480px] mx-auto shadow-sm">
         <button

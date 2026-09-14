@@ -1,0 +1,109 @@
+/* ─── Scrollable Table Container ─────────────────────────────────────── */
+.scrollable-table {
+    max-height: 360px;
+    overflow-y: auto;
+    border: 1px solid #dde2ee;
+    border-radius: 10px;
+    box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.03);
+}
+
+.scrollable-table::-webkit-scrollbar {
+    width: 5px;
+}
+.scrollable-table::-webkit-scrollbar-track {
+    background: #f0f2f8;
+}
+.scrollable-table::-webkit-scrollbar-thumb {
+    background: #c0c8d8;
+    border-radius: 99px;
+}
+
+/* ─── Table Header Row ───────────────────────────────────────────────── */
+.slds-table thead tr th {
+    background: linear-gradient(90deg, #f0f4ff, #edf1fb) !important;
+    font-weight: 700 !important;
+    font-size: 0.78rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px !important;
+    color: #4a5568 !important;
+    border-bottom: 2px solid #d6ddf0 !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+/* ─── Table Row Hover ────────────────────────────────────────────────── */
+.slds-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.slds-table tbody tr:hover td {
+    background-color: #f4f7ff !important;
+}
+
+/* ─── Low Stock Row ──────────────────────────────────────────────────── */
+.low-stock-row {
+    background-color: #fffbeb !important;
+}
+
+.low-stock-row:hover td {
+    background-color: #fef3c7 !important;
+}
+
+/* ─── Alert Banner ───────────────────────────────────────────────────── */
+.alert-banner {
+    background: linear-gradient(90deg, #fff8e6, #fff3d0);
+    border-left: 4px solid #f59e0b;
+    border-radius: 8px;
+    padding: 0.7rem 1.1rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #92400e;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.18);
+    gap: 0.5rem;
+}
+
+.icon-warning {
+    --sds-c-icon-color-foreground: #f59e0b;
+}
+
+/* ─── Stock Badges ───────────────────────────────────────────────────── */
+.stock-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 99px;
+    padding: 3px 11px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.badge-red {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.badge-green {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+/* ─── Price Text ─────────────────────────────────────────────────────── */
+.price-text {
+    color: #15803d;
+    font-weight: 700;
+}
+
+/* ─── Typography Utilities ───────────────────────────────────────────── */
+.font-semibold {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.text-muted {
+    color: #64748b;
+    font-size: 0.84rem;
+}

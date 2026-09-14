@@ -1,0 +1,33 @@
+/* ─── Dashboard Wrapper ──────────────────────────────────────────────── */
+.dashboard-wrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+    font-family: 'Salesforce Sans', 'Segoe UI', Arial, sans-serif;
+    animation: dashboardFadeIn 0.5s ease-out forwards;
+    border: 1px solid #eef1f6;
+}
+
+@keyframes dashboardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ─── Dashboard Body ─────────────────────────────────────────────────── */
+.dashboard-body {
+    background: #f8fafc;
+    padding-top: 1.25rem;
+    padding-bottom: 2rem;
+}
+
+/* ─── Section Gap Utility ────────────────────────────────────────────── */
+.section-gap {
+    margin-bottom: 1.5rem;
+}

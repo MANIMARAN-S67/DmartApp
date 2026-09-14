@@ -1,0 +1,140 @@
+/* ─── Timeline List ──────────────────────────────────────────────────── */
+.timeline-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 440px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.timeline-list::-webkit-scrollbar {
+    width: 4px;
+}
+.timeline-list::-webkit-scrollbar-track {
+    background: #f0f2f8;
+}
+.timeline-list::-webkit-scrollbar-thumb {
+    background: #c0c8d8;
+    border-radius: 99px;
+}
+
+/* Continuous vertical connector line */
+.timeline-list::before {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: linear-gradient(to bottom, #10b981, #3b82f6, #8b5cf6, #f59e0b);
+    border-radius: 99px;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+/* ─── Timeline Item ──────────────────────────────────────────────────── */
+.timeline-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    position: relative;
+    z-index: 1;
+    transition: background 0.15s ease;
+    border-radius: 6px;
+    padding-left: 0.25rem;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-item:hover {
+    background-color: #f8faff;
+}
+
+/* ─── Timeline Dot ───────────────────────────────────────────────────── */
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 0.9rem;
+    margin-top: 0.3rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 5px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.timeline-item:hover .timeline-dot {
+    transform: scale(1.3);
+}
+
+/* ─── Dot Colors ─────────────────────────────────────────────────────── */
+.dot-green  { background-color: #10b981; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(16, 185, 129, 0.2); }
+.dot-gray   { background-color: #94a3b8; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(148, 163, 184, 0.2); }
+.dot-blue   { background-color: #3b82f6; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(59, 130, 246, 0.2); }
+.dot-purple { background-color: #8b5cf6; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(139, 92, 246, 0.2); }
+.dot-orange { background-color: #f59e0b; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(245, 158, 11, 0.2); }
+.dot-red    { background-color: #ef4444; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(239, 68, 68, 0.2); }
+
+/* ─── Timeline Content ───────────────────────────────────────────────── */
+.timeline-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ─── Log Action ─────────────────────────────────────────────────────── */
+.log-action {
+    font-size: 0.87rem;
+    color: #1e293b;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 160px;
+}
+
+/* ─── Log Time ───────────────────────────────────────────────────────── */
+.log-time {
+    font-size: 0.73rem;
+    color: #94a3b8;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+/* ─── Log Details ────────────────────────────────────────────────────── */
+.log-details {
+    font-size: 0.8rem;
+    margin: 3px 0 0 0;
+    color: #64748b;
+    line-height: 1.45;
+}
+
+/* ─── Log Path ───────────────────────────────────────────────────────── */
+.log-path {
+    font-size: 0.73rem;
+    color: #3b82f6;
+    background: #eff6ff;
+    border-radius: 4px;
+    padding: 1px 6px;
+    display: inline-block;
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+/* ─── Typography Utilities ───────────────────────────────────────────── */
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-muted {
+    color: #64748b;
+}
+
+/* ─── Empty / Muted Icon ─────────────────────────────────────────────── */
+.icon-muted {
+    --sds-c-icon-color-foreground: #cbd5e1;
+}

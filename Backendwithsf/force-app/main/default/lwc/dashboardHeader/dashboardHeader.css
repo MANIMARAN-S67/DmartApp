@@ -1,0 +1,163 @@
+/* ─── Banner Wrapper ─────────────────────────────────────────────────── */
+.banner-wrapper {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f7fb 100%);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1.5rem;
+    border: 1px solid #eef1f6;
+}
+
+/* Background organic shapes mimicking the cloud/tree style in screenshot */
+.banner-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 300px;
+    height: 300px;
+    background: #e6f7ef;
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.banner-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    right: -20px;
+    width: 400px;
+    height: 400px;
+    background: #eaf1fa;
+    border-radius: 50%;
+    z-index: 0;
+    opacity: 0.7;
+}
+
+/* ─── Banner Content ─────────────────────────────────────────────────── */
+.banner-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ─── Illustrations ──────────────────────────────────────────────────── */
+.illustration-area {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 1.5rem;
+}
+
+.main-illustration {
+    width: 100%;
+    height: 100%;
+}
+
+.floating-element {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+}
+
+.leaf-1 {
+    top: 10%;
+    left: -40%;
+    animation: float1 4s ease-in-out infinite;
+}
+
+.leaf-2 {
+    bottom: 20%;
+    right: -50%;
+    animation: float2 5s ease-in-out infinite reverse;
+}
+
+@keyframes float1 {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(15deg); }
+}
+
+@keyframes float2 {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(-10deg); }
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────── */
+.tagline {
+    font-family: 'Georgia', serif;
+    font-style: italic;
+    color: #4a5568;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.main-title {
+    font-family: 'Georgia', serif;
+    color: #1a202c;
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    margin: 0.5rem 0;
+    text-transform: uppercase;
+}
+
+.sub-title {
+    font-family: 'Arial', sans-serif;
+    color: #718096;
+    font-size: 1rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* ─── Corner Actions ─────────────────────────────────────────────────── */
+.corner-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    z-index: 10;
+}
+
+.timestamp {
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.refresh-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 1rem;
+    background: transparent;
+    border: 1px solid #cbd5e0;
+    border-radius: 20px;
+    color: #4a5568;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.refresh-btn:hover {
+    background: #f7fafc;
+    border-color: #a0aec0;
+}
+
+.icon-dark {
+    --sds-c-icon-color-foreground: #4a5568 !important;
+}

@@ -147,6 +147,8 @@ const Offers = () => {
     });
     const navigate = useNavigate();
     const [toast, setToast] = useState('');
+    const [showSearch, setShowSearch] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -202,15 +204,40 @@ const Offers = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-24 animate-fadeIn">
+        <div className="min-h-full bg-slate-50 pb-24 animate-fadeIn">
             <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-100 flex items-center justify-between px-5 py-4 max-w-[480px] mx-auto shadow-sm">
-                <button onClick={() => navigate('/home')} className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all">
+                <button onClick={() => showSearch ? (setShowSearch(false), setSearchQuery('')) : navigate('/home')} className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all">
                     <ArrowLeft className="w-5 h-5" />
                 </button>
-                <h1 className="text-xl font-black text-slate-900 tracking-tight">Offers &amp; Deals</h1>
-                <button onClick={() => navigate('/products')} className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all">
-                    <Search className="w-5 h-5" />
-                </button>
+                {showSearch ? (
+                    <div className="flex-1 mx-3 relative">
+                        <input
+                            autoFocus
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search for offers..."
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-bold text-slate-800 outline-none focus:border-green-400 focus:bg-white transition-all"
+                        />
+                        {searchQuery && (
+                            <button 
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-200 rounded-full text-slate-500 text-[10px] font-black"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+                ) : (
+                    <h1 className="text-xl font-black text-slate-900 tracking-tight">Offers &amp; Deals</h1>
+                )}
+                {!showSearch ? (
+                    <button onClick={() => setShowSearch(true)} className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all">
+                        <Search className="w-5 h-5" />
+                    </button>
+                ) : (
+                    <div className="w-10" />
+                )}
             </header>
 
             <div className="flex gap-2 px-5 py-4 overflow-x-auto scrollbar-hide">
@@ -244,7 +271,7 @@ const Offers = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4 px-5 mb-8">
-                {FLASH_OFFERS.filter(o => activeTab === 'all' || o.cat === activeTab).map(o => {
+                {FLASH_OFFERS.filter(o => (activeTab === 'all' || o.cat === activeTab) && o.name.toLowerCase().includes(searchQuery.toLowerCase())).map(o => {
                     const qty = cart.find(c => c.id === o.id)?.qty || 0;
                     return (
                         <div key={o.id} className="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm relative animate-slideUp">
@@ -294,7 +321,7 @@ const Offers = () => {
             </div>
 
             <div className="px-5 space-y-4">
-                {HOT_DEALS.map(d => {
+                {HOT_DEALS.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase())).map(d => {
                     const isLiked = liked.includes(d.id);
                     return (
                     <div key={d.id} className="bg-white border border-slate-100 rounded-3xl p-4 flex gap-4 items-center shadow-sm animate-slideUp">

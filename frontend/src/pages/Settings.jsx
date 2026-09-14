@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Mail, Phone, Lock, ChevronRight, Shield, Save, Edit3, CheckCircle2, X } from 'lucide-react';
 
@@ -7,7 +7,7 @@ const Settings = () => {
 
     const [name, setName] = useState(localStorage.getItem('userName') || 'DMart User');
     const [email, setEmail] = useState(localStorage.getItem('userEmail') || 'guest@dmart.in');
-    const [phone, setPhone] = useState(localStorage.getItem('userPhone') || '+91 98765 43210');
+    const [phone, setPhone] = useState(localStorage.getItem('userPhone') || '');
     const [isEditing, setIsEditing] = useState(false);
     const [saveStatus, setSaveStatus] = useState('');
 
@@ -42,7 +42,7 @@ const Settings = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-20 animate-fadeIn relative">
+        <div className="min-h-full bg-slate-50 pb-20 animate-fadeIn relative">
             <header className="fixed top-0 left-0 right-0 z-50 bg-white px-5 py-4 border-b border-slate-100 flex items-center justify-between max-w-[480px] mx-auto shadow-sm">
                 <div className="flex items-center gap-4">
                     <button onClick={() => navigate(-1)} className="w-10 h-10 bg-slate-50 border border-slate-100 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all">

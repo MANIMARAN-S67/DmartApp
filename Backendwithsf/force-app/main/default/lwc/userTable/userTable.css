@@ -1,0 +1,31 @@
+/* ─── Scrollable Table Container ─────────────────────────────────────── */
+.scrollable-table {
+    border: 1px solid #dde2ee;
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 360px;
+    overflow-y: auto;
+    box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.03);
+}
+
+.scrollable-table::-webkit-scrollbar {
+    width: 5px;
+}
+.scrollable-table::-webkit-scrollbar-track {
+    background: #f0f2f8;
+}
+.scrollable-table::-webkit-scrollbar-thumb {
+    background: #c0c8d8;
+    border-radius: 99px;
+}
+
+/* ─── Search Input Polish ────────────────────────────────────────────── */
+.search-wrapper {
+    position: relative;
+    margin-bottom: 0.85rem;
+}
+
+/* ─── Datatable Row Hover via SLDS CSS Custom Property ──────────────── */
+:host {
+    --lwc-colorBackgroundRowHover: #f4f7ff;
+}

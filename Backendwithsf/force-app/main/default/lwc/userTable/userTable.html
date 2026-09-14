@@ -1,0 +1,29 @@
+<template>
+    <lightning-card title="Registered Customers" icon-name="standard:user">
+        <div class="slds-p-around_medium">
+            <lightning-input 
+                type="search" 
+                label="Search Customers" 
+                variant="label-hidden"
+                placeholder="Search by name, email or phone..." 
+                onchange={handleSearchChange}
+                value={searchKey}
+                class="slds-m-bottom_medium">
+            </lightning-input>
+            
+            <template if:true={hasUsers}>
+                <div class="scrollable-table">
+                    <lightning-datatable 
+                        key-field="Id" 
+                        data={filteredUsers} 
+                        columns={columns} 
+                        hide-checkbox-column="true">
+                    </lightning-datatable>
+                </div>
+            </template>
+            <template if:false={hasUsers}>
+                <p class="slds-text-color_weak slds-text-align_center slds-p-around_medium">No users found.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

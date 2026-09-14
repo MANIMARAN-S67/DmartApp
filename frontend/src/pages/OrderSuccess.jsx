@@ -8,6 +8,10 @@ const OrderSuccess = () => {
     const [rating, setRating] = useState(0);
     const [toast, setToast] = useState('');
     const paymentMethod = localStorage.getItem('lastPaymentMethod') || 'UPI (GPay)';
+    const orderId = localStorage.getItem('lastOrderId') || 'DM-' + Math.floor(Math.random() * 90000 + 10000);
+    const orderTotal = localStorage.getItem('lastOrderTotal') || '0';
+    const lastCart = JSON.parse(localStorage.getItem('dmartLastCart') || '[]');
+    const itemCount = lastCart.reduce((a, i) => a + i.qty, 0);
 
     const showToast = (msg) => {
         setToast(msg);
@@ -42,7 +46,7 @@ const OrderSuccess = () => {
     }, []);
 
     const shareWA = () => {
-        const msg = `🛒 *Order Placed Successfully!*\n\nApp: DMart Online\nOrder ID: #DM-81029\nTotal: ₹845\nExpected Delivery: 25 mins\n\nTrack your order here: https://dmart-app.com/track/DM-81029`;
+        const msg = `🛒 *Order Placed Successfully!*\n\nApp: DMart Online\nOrder ID: #${orderId}\nTotal: ₹${orderTotal}\nExpected Delivery: 30 mins\n\nTrack your order here: https://dmart-app.com/track/${orderId}`;
         window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     };
 
@@ -52,7 +56,7 @@ const OrderSuccess = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col font-sans max-w-[480px] mx-auto animate-fadeIn pb-10 overflow-x-hidden">
+        <div className="min-h-full bg-slate-50 flex flex-col font-sans max-w-[480px] mx-auto animate-fadeIn pb-10 overflow-x-hidden">
             <div className="bg-green-600 pt-16 pb-24 px-6 relative rounded-b-[40px] shadow-lg overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-full opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20px 20px, white 2px, transparent 0)', backgroundSize: '40px 40px' }}></div>
                 <div className="relative z-10 flex flex-col items-center text-center animate-slideUp">
@@ -61,7 +65,7 @@ const OrderSuccess = () => {
                         <div className="absolute inset-0 border-4 border-white/40 rounded-full animate-ping"></div>
                     </div>
                     <h1 className="text-3xl font-black text-white mb-2 leading-tight">Order Successful!</h1>
-                    <p className="text-green-100 font-medium text-sm">Your order #DM-81029 has been placed.</p>
+                    <p className="text-green-100 font-medium text-sm">Your order #{orderId} has been placed.</p>
                 </div>
             </div>
 
@@ -70,7 +74,7 @@ const OrderSuccess = () => {
                     <h3 className="font-black text-slate-900 text-lg mb-4 border-b border-slate-100 pb-3">Order Details</h3>
                     <div className="flex justify-between items-center mb-3">
                         <span className="text-sm font-bold text-slate-500">Total Amount</span>
-                        <span className="text-lg font-black text-slate-900">₹845.00</span>
+                        <span className="text-lg font-black text-slate-900">₹{orderTotal}</span>
                     </div>
                     <div className="flex justify-between items-center mb-3">
                         <span className="text-sm font-bold text-slate-500">Payment Mode</span>
@@ -78,7 +82,7 @@ const OrderSuccess = () => {
                     </div>
                     <div className="flex justify-between items-center mb-4">
                         <span className="text-sm font-bold text-slate-500">Items Expected</span>
-                        <span className="text-sm font-bold text-slate-900">7 Items</span>
+                        <span className="text-sm font-bold text-slate-900">{itemCount} Items</span>
                     </div>
 
                     <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-start gap-4 mb-5">
@@ -90,7 +94,7 @@ const OrderSuccess = () => {
                     </div>
 
                     <div className="flex gap-2">
-                        <button onClick={() => navigate('/tracking')} className="flex-[1.5] bg-slate-900 text-white font-black text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-slate-200">
+                        <button onClick={() => navigate('/tracking', { state: { orderId } })} className="flex-[1.5] bg-slate-900 text-white font-black text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-slate-200">
                             Track Order <ArrowRight className="w-4 h-4" />
                         </button>
                         <button onClick={shareWA} className="flex-1 bg-[#25D366] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-all shadow-lg shadow-green-100">

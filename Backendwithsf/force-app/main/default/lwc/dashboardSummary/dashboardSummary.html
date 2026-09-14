@@ -1,0 +1,76 @@
+<template>
+    <div class="slds-grid slds-wrap slds-gutters slds-m-vertical_medium">
+
+        <!-- Total Users Card -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="summary-card bg-blue">
+                <div class="card-body">
+                    <div class="icon-container">
+                        <lightning-icon icon-name="standard:user" size="medium"></lightning-icon>
+                    </div>
+                    <div class="stats-info">
+                        <p class="stats-label">Total Users</p>
+                        <p class="stats-val">{totalUsers}</p>
+                        <p class="stats-trend">Registered customers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Products Card -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="summary-card bg-orange">
+                <div class="card-body">
+                    <div class="icon-container">
+                        <lightning-icon icon-name="standard:product" size="medium"></lightning-icon>
+                    </div>
+                    <div class="stats-info">
+                        <p class="stats-label">Total Products</p>
+                        <p class="stats-val">{totalProducts}</p>
+                        <p class="stats-trend">Active SKUs in catalog</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Orders Card -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="summary-card bg-green">
+                <div class="card-body">
+                    <div class="icon-container">
+                        <lightning-icon icon-name="standard:orders" size="medium"></lightning-icon>
+                    </div>
+                    <div class="stats-info">
+                        <p class="stats-label">Total Orders</p>
+                        <p class="stats-val">{totalOrders}</p>
+                        <p class="stats-trend">All-time order count</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Card -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="summary-card bg-purple">
+                <div class="card-body">
+                    <div class="icon-container">
+                        <lightning-icon icon-name="standard:pricebook" size="medium"></lightning-icon>
+                    </div>
+                    <div class="stats-info">
+                        <p class="stats-label">Revenue</p>
+                        <p class="stats-val">
+                            <lightning-formatted-number
+                                value={revenue}
+                                format-style="currency"
+                                currency-code="INR"
+                                maximum-fraction-digits="0">
+                            </lightning-formatted-number>
+                        </p>
+                        <p class="stats-trend">Gross revenue (INR)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</template>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, MapPin, Phone, Home as HomeIcon, Briefcase, MapIcon, Check, Edit2, Trash2 } from 'lucide-react';
+import api from '../utils/api';
 
 const Address = () => {
     const navigate = useNavigate();
@@ -16,6 +17,16 @@ const Address = () => {
 
     useEffect(() => {
         localStorage.setItem('dmartAddresses', JSON.stringify(addresses));
+        const sfContactId = localStorage.getItem('sfContactId');
+        if (sfContactId) {
+            const defaultPhone = addresses.find(a => a.default)?.phone || addresses[0]?.phone || '';
+            const sanitizedPhone = defaultPhone.replace(/\D/g, '').slice(0, 10);
+            api.post('/DmartUserAPI_v2/update-profile', {
+                userId: sfContactId,
+                phone: sanitizedPhone,
+                address: JSON.stringify(addresses)
+            }).catch(e => console.error("Failed to sync addresses with Salesforce:", e));
+        }
     }, [addresses]);
 
     const showToast = (msg) => {
@@ -73,7 +84,7 @@ const Address = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 animate-fadeIn relative pb-20">
+        <div className="min-h-full bg-slate-50 animate-fadeIn relative pb-20">
             <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-100 flex items-center px-5 py-4 max-w-[480px] mx-auto shadow-sm">
                 <button onClick={() => navigate(-1)} className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all mr-4">
                     <ArrowLeft className="w-5 h-5" />

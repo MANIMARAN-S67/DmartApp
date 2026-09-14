@@ -31,7 +31,7 @@ const Cart = () => {
 
     if (cart.length === 0) {
         return (
-            <div className="min-h-screen bg-white px-8 flex flex-col items-center justify-center text-center animate-fadeIn">
+            <div className="min-h-full bg-white px-8 flex flex-col items-center justify-center text-center animate-fadeIn">
                 <div className="w-48 h-48 rounded-full bg-slate-50 flex items-center justify-center mb-10 border border-slate-100 shadow-inner">
                     <ShoppingCart className="w-20 h-20 text-slate-200" />
                 </div>
@@ -48,7 +48,7 @@ const Cart = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 pb-40 animate-fadeIn">
+        <div className="min-h-full bg-slate-50 pb-[200px] animate-fadeIn">
             <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl px-5 py-4 border-b border-slate-100 flex items-center justify-between max-w-[480px] mx-auto shadow-sm">
                 <div className="flex items-center gap-4">
                     <button onClick={() => navigate(-1)} className="w-10 h-10 bg-slate-100 border border-slate-200 flex items-center justify-center rounded-xl text-slate-700 active:scale-90 transition-all">
@@ -127,7 +127,7 @@ const Cart = () => {
                 </div>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 h-32 bg-white/70 backdrop-blur-3xl px-8 flex items-center justify-center max-w-[480px] mx-auto z-50 rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+            <div className="fixed bottom-[60px] left-0 right-0 h-32 bg-white/70 backdrop-blur-3xl px-8 flex items-center justify-center max-w-[480px] mx-auto z-50 rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
                 <button
                     onClick={() => navigate('/payment')}
                     className="w-full bg-green-600 text-white h-16 rounded-3xl font-black text-xl shadow-2xl shadow-green-200/50 flex items-center justify-between px-8 active:scale-95 transition-all group"

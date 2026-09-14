@@ -1,1 +1,11 @@
-node_modules
+node_modules/
+.env
+.sf/
+.sfdx/
+.vscode/
+dist/
+*.pptx
+*.log
+.firebase/
+frontend/vite.config.js.timestamp-*.mjs
+verify-architecture.js

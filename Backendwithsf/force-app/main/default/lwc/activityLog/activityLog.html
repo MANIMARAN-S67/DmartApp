@@ -1,0 +1,33 @@
+<template>
+    <lightning-card title="Recent Activity Logs" icon-name="standard:event">
+        <div class="slds-p-around_medium">
+            <template if:true={hasLogs}>
+                <ul class="timeline-list">
+                    <template for:each={processedLogs} for:item="log">
+                        <li key={log.Id} class="timeline-item">
+                            <div class="timeline-dot {log.dotColor}"></div>
+                            <div class="timeline-content">
+                                <div class="slds-grid slds-grid_align-spread">
+                                    <span class="log-action font-semibold">{log.Action__c}</span>
+                                    <span class="log-time text-muted">{log.formattedTime}</span>
+                                </div>
+                                <template if:true={log.Details__c}>
+                                    <p class="log-details text-muted">{log.Details__c}</p>
+                                </template>
+                                <template if:true={log.Path__c}>
+                                    <span class="log-path">📍 {log.Path__c}</span>
+                                </template>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+            <template if:false={hasLogs}>
+                <div class="slds-text-align_center slds-text-color_weak slds-p-around_large">
+                    <lightning-icon icon-name="utility:event" size="large" class="slds-m-bottom_small icon-muted"></lightning-icon>
+                    <p>No activity logs found.</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

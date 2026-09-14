@@ -114,7 +114,7 @@ Thank you for shopping at DMart! 🛍️`;
 
     /* ────────────────── RENDER ────────────────── */
     return (
-        <div className="min-h-screen bg-slate-100 pb-20 font-sans" style={{ maxWidth: 480, margin: '0 auto' }}>
+        <div className="min-h-full bg-slate-100 pb-20 font-sans" style={{ maxWidth: 480, margin: '0 auto' }}>
 
             {/* ── Header ── */}
             <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-sm px-5 py-4 flex items-center gap-3">

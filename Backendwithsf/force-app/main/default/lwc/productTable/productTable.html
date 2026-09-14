@@ -1,0 +1,51 @@
+<template>
+    <lightning-card title="Products &amp; Inventory" icon-name="standard:product">
+        <div class="slds-p-around_medium">
+
+            <!-- Low Stock Alert Banner -->
+            <template if:true={hasLowStock}>
+                <div class="alert-banner slds-m-bottom_medium">
+                    <lightning-icon icon-name="utility:warning" size="xx-small" class="slds-m-right_x-small icon-warning"></lightning-icon>
+                    <span>{lowStockCount} product(s) are running low on stock!</span>
+                </div>
+            </template>
+
+            <!-- Products Table -->
+            <template if:true={hasProducts}>
+                <div class="scrollable-table">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col"><div class="slds-truncate">Product Name</div></th>
+                                <th scope="col"><div class="slds-truncate">Category</div></th>
+                                <th scope="col"><div class="slds-truncate">Price</div></th>
+                                <th scope="col"><div class="slds-truncate">Stock</div></th>
+                                <th scope="col"><div class="slds-truncate">Status</div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={processedProducts} for:item="product">
+                                <tr key={product.Id} class={product.rowClass}>
+                                    <td><div class="slds-truncate font-semibold">{product.Name}</div></td>
+                                    <td><div class="slds-truncate text-muted">{product.Category__c}</div></td>
+                                    <td>
+                                        <div class="slds-truncate price-text">
+                                            <lightning-formatted-number value={product.Price__c} format-style="currency" currency-code="INR"></lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td><div class="slds-truncate">{product.Stock_Quantity__c}</div></td>
+                                    <td>
+                                        <span class={product.badgeClass}>{product.stockStatus}</span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template if:false={hasProducts}>
+                <p class="slds-text-color_weak slds-text-align_center slds-p-around_medium">No products found.</p>
+            </template>
+        </div>
+    </lightning-card>
+</template>

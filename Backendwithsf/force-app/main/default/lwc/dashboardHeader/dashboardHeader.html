@@ -1,0 +1,51 @@
+<template>
+    <div class="banner-wrapper">
+        
+        <!-- Banner Content -->
+        <div class="banner-content">
+            
+            <!-- Illustration Area -->
+            <div class="illustration-area">
+                <!-- Shopping Bag SVG (Orange theme to match the reference style) -->
+                <svg class="main-illustration" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 20V14C16 8.5 20.5 4 26 4H38C43.5 4 48 8.5 48 14V20" fill="none" stroke="#ff7a3d" stroke-width="3" stroke-linecap="round" />
+                    <path d="M10 20L14 58C14.2 59.7 15.6 61 17.3 61H46.7C48.4 61 49.8 59.7 50 58L54 20H10Z" fill="none" stroke="#ff7a3d" stroke-width="3" stroke-linejoin="round"/>
+                    <path d="M22 28V34" fill="none" stroke="#ff7a3d" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M42 28V34" fill="none" stroke="#ff7a3d" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Apple/Produce -->
+                    <circle cx="32" cy="45" r="7" fill="none" stroke="#ff7a3d" stroke-width="3"/>
+                    <path d="M32 38C34 34 38 34 38 34" fill="none" stroke="#ff7a3d" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                
+                <!-- Floating Leaves (Decorative) -->
+                <svg class="floating-element leaf-1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#6A1B9A" />
+                    <path d="M12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7Z" fill="#6A1B9A" opacity="0.6"/>
+                </svg>
+                
+                <svg class="floating-element leaf-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#6A1B9A" />
+                    <path d="M12 7C9.24 7 7 9.24 7 12C7 14.76 9.24 17 12 17C14.76 17 17 14.76 17 12C17 9.24 14.76 7 12 7Z" fill="#6A1B9A" opacity="0.6"/>
+                </svg>
+            </div>
+
+            <!-- Typography matching reference -->
+            <h2 class="tagline">Quality Products Great Value</h2>
+            <h1 class="main-title">DMART CHIEF-OP</h1>
+            <h3 class="sub-title">SALESFORCE CONSOLE</h3>
+        </div>
+
+        <!-- Corner Actions -->
+        <div class="corner-actions">
+            <div class="timestamp">
+                <lightning-icon icon-name="utility:clock" size="xx-small" class="icon-dark"></lightning-icon>
+                <span>{currentDateTime}</span>
+            </div>
+            <button class="refresh-btn" onclick={handleRefresh} title="Refresh Dashboard">
+                <lightning-icon icon-name="utility:refresh" size="xx-small" class="icon-dark"></lightning-icon>
+                Refresh
+            </button>
+        </div>
+
+    </div>
+</template>
